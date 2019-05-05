@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package hr.foi.hlf_contrator.schema;
+option go_package = "schema";
+
+import "google/protobuf/timestamp.proto";
+
+// Application state
+message Application {
+    enum State {
+        APPLIED = 0;
+        ACCEPTED = 1;
+        REJECTED = 2;
+        COMPLETED = 3;
+    }
+
+    // Identification of applier
+    string contractor = 1;
+    // Proposed Price in cents
+    int64 price = 2;
+    State state = 3;
+    string description = 4;
+
+    google.protobuf.Timestamp apply_date = 5;
+}
+
+// Project state
+message Project {
+
+    enum State {
+        OPEN = 0;
+        IN_PROGRESS = 1;
+        COMPLETED = 2;
+        CANCELED = 3;
+    }
+
+    // Composite key is defined by Issuer and Name
+    string issuer = 1;
+    string name = 2;
+
+    // List of applicants for the project
+    repeated Application applications = 3;
+    // Identification of the project Assessor, can be the same as Issuer
+    string assessor = 4;
+    
+    google.protobuf.Timestamp open_date = 5;
+    google.protobuf.Timestamp start_date = 6;
+    google.protobuf.Timestamp end_date = 7;
+    
+    // Estimated Project value in cents
+    uint64 estimated_value = 8;
+    State state = 9;
+    string description = 10;
+}
+
+// ProjectId identifier part
+message ProjetId {
+    string issuer = 1;
+    string name = 2;
+}
+
+// ProjectList list of projects
+message ProjectList {
+    repeated Project items = 1;
+}

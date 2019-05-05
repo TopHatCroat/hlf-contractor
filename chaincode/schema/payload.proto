@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package cckit.examples.cpaper_extended.schema;
+option go_package = "schema";
+
+import "google/protobuf/timestamp.proto";
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+
+// IssueProject transaction
+message IssueProject {
+    string issuer = 1  [(validator.field) = {string_not_empty : true}];
+    string name = 2 [(validator.field) = {string_not_empty : true}];
+    string assessor = 3;
+    google.protobuf.Timestamp start_date = 4 [(validator.field) = {msg_exists : true}];
+    google.protobuf.Timestamp end_date = 5 [(validator.field) = {msg_exists : true}];
+
+    int32 estimated_value = 6 [(validator.field) = {int_gt : 0}];
+    int32 description = 7 [(validator.field) = {string_not_empty : true}];
+}
