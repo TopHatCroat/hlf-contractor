@@ -49,7 +49,7 @@ func (this *Project) Validate() error {
 	}
 	return nil
 }
-func (this *ProjetId) Validate() error {
+func (this *ProjectId) Validate() error {
 	return nil
 }
 func (this *ProjectList) Validate() error {

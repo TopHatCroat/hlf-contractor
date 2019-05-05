@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package hr.foi.hlf_contrator.schema;
+package io.github.tophatcroat.hlf_contrator.schema;
 option go_package = "schema";
 
 import "google/protobuf/timestamp.proto";
@@ -54,7 +54,7 @@ message Project {
 }
 
 // ProjectId identifier part
-message ProjetId {
+message ProjectId {
     string issuer = 1;
     string name = 2;
 }

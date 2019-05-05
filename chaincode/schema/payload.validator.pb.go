@@ -7,8 +7,8 @@ import (
 	fmt "fmt"
 	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "github.com/mwitkow/go-proto-validators"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
+	_ "github.com/mwitkow/go-proto-validators"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
 )
 
@@ -17,10 +17,7 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-func (this *IssueProject) Validate() error {
-	if this.Issuer == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("Issuer", fmt.Errorf(`value '%v' must not be an empty string`, this.Issuer))
-	}
+func (this *PublishProject) Validate() error {
 	if this.Name == "" {
 		return github_com_mwitkow_go_proto_validators.FieldError("Name", fmt.Errorf(`value '%v' must not be an empty string`, this.Name))
 	}
@@ -42,6 +39,9 @@ func (this *IssueProject) Validate() error {
 	}
 	if !(this.EstimatedValue > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("EstimatedValue", fmt.Errorf(`value '%v' must be greater than '0'`, this.EstimatedValue))
+	}
+	if this.Description == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Description", fmt.Errorf(`value '%v' must not be an empty string`, this.Description))
 	}
 	return nil
 }
