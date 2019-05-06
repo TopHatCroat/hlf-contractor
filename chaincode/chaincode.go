@@ -18,7 +18,8 @@ var (
 		mapping.PKeySchema(&schema.ProjectId{}),
 		mapping.List(&schema.ProjectList{}),
 	)
-	EventMappings = mapping.EventMappings{}
+	EventMappings = mapping.EventMappings{}.
+			Add(&schema.PublishProject{})
 )
 
 func NewCC() *router.Chaincode {
@@ -35,14 +36,14 @@ func NewCC() *router.Chaincode {
 	// method for debug chaincode state
 	debug.AddHandlers(r, `debug`, owner.Only)
 
-	r.
+	r.Group("project").
 		// Read all method
-		Query(`list`, queryProjectList).
+		Query(`List`, queryProjectList).
 		// Get Project method, takes 2 params: Issuer Id and Project Name
-		Query(`get`, queryProject, defparam.Proto(&schema.ProjectId{})).
+		Query(`Get`, queryProject, defparam.Proto(&schema.ProjectId{})).
 
 		// txn methods
-		Invoke(`issue`, invokeProjectPublish, defparam.Proto(&schema.PublishProject{}))
+		Invoke(`Publish`, invokeProjectPublish, defparam.Proto(&schema.PublishProject{}))
 
 	return router.NewChaincode(r)
 }
@@ -78,7 +79,7 @@ func invokeProjectPublish(c router.Context) (res interface{}, err error) {
 		Description:    publishData.Description,
 	}
 
-	if err = c.Event().Set(project); err != nil {
+	if err = c.Event().Set(publishData); err != nil {
 		return nil, err
 	}
 
