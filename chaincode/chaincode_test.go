@@ -49,20 +49,32 @@ var _ = Describe(`Project`, func() {
 	Describe("Project", func() {
 
 		It("Allow a user to publish a valid project", func() {
-			resp := cc.From(actors["someone"]).Invoke("projectPublish", &schema.PublishProject{
+			now := ptypes.TimestampNow()
+			newProject := &schema.PublishProject{
 				Name:           "proj1",
 				Assessor:       "user@example.com",
-				StartDate:      ptypes.TimestampNow(),
-				EndDate:        ptypes.TimestampNow(),
+				StartDate:      now,
+				EndDate:        now,
 				EstimatedValue: 10000,
 				Description:    "Some text",
-			})
+			}
+
+			resp := cc.From(actors["someone"]).Invoke("projectPublish", newProject)
 			expectcc.ResponseOk(resp)
 
-			queryResp := cc.From(actors["someone"]).Invoke("projectList")
-			projects := expectcc.PayloadIs(queryResp, &[]schema.Project{}).([]schema.Project)
+			queryResp := cc.From(actors["someone"]).Invoke("projectGet", &schema.ProjectId{
+				Issuer: "User1@org1.example.com",
+				Name: "proj1",
+			})
 
-			Expect(len(projects)).To(Equal(1))
+			createdProject := expectcc.PayloadIs(queryResp, &schema.Project{}).(*schema.Project)
+
+			Expect(createdProject.Name).To(Equal("proj1"))
+			Expect(createdProject.Assessor).To(Equal("user@example.com"))
+			Expect(createdProject.StartDate.Seconds).To(Equal(now.Seconds))
+			Expect(createdProject.EndDate.Seconds).To(Equal(now.Seconds))
+			Expect(createdProject.EstimatedValue).To(BeNumerically("==", 10000))
+			Expect(createdProject.Description).To(Equal("Some text"))
 		})
 	})
 })

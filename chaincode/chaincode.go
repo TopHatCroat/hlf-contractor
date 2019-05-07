@@ -53,7 +53,7 @@ func queryProjectList(c router.Context) (interface{}, error) {
 }
 
 func queryProject(c router.Context) (interface{}, error) {
-	id := c.Param().(*schema.Project)
+	id := c.Param().(*schema.ProjectId)
 	return c.State().Get(id)
 }
 
@@ -68,8 +68,10 @@ func invokeProjectPublish(c router.Context) (res interface{}, err error) {
 	issuer, err := identity.FromStub(c.Stub())
 
 	// Create state entry
+	issuerName := issuer.Cert.Subject.CommonName;
 	project := &schema.Project{
-		Issuer:         issuer.GetID(),
+		Issuer:         issuerName,
+		Assessor:       publishData.Assessor,
 		Name:           publishData.Name,
 		OpenDate:       ptypes.TimestampNow(),
 		StartDate:      publishData.StartDate,
