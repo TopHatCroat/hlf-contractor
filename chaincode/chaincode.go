@@ -36,14 +36,12 @@ func NewCC() *router.Chaincode {
 	// method for debug chaincode state
 	debug.AddHandlers(r, `debug`, owner.Only)
 
-	r.Group("project").
-		// Read all method
-		Query(`List`, queryProjectList).
+	// Read all method
+	r.Query(`list`, queryProjectList).
 		// Get Project method, takes 2 params: Issuer Id and Project Name
-		Query(`Get`, queryProject, defparam.Proto(&schema.ProjectId{})).
-
+		Query(`get`, queryProject, defparam.Proto(&schema.ProjectId{})).
 		// txn methods
-		Invoke(`Publish`, invokeProjectPublish, defparam.Proto(&schema.PublishProject{}))
+		Invoke(`publish`, invokeProjectPublish, defparam.Proto(&schema.PublishProject{}))
 
 	return router.NewChaincode(r)
 }
@@ -68,7 +66,7 @@ func invokeProjectPublish(c router.Context) (res interface{}, err error) {
 	issuer, err := identity.FromStub(c.Stub())
 
 	// Create state entry
-	issuerName := issuer.Cert.Subject.CommonName;
+	issuerName := issuer.Cert.Subject.CommonName
 	project := &schema.Project{
 		Issuer:         issuerName,
 		Assessor:       publishData.Assessor,

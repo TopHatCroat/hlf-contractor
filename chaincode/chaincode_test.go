@@ -29,7 +29,7 @@ func TestProject(t *testing.T) {
 }
 
 var _ = Describe(`Project`, func() {
-	cc := testcc.NewMockStub(`project`, NewCC())
+	projectCc := testcc.NewMockStub(`project`, NewCC())
 
 	// Load actor certificates
 	actors, err := testcc.IdentitiesFromFiles(`SOME_MSP`, map[string]string{
@@ -43,7 +43,7 @@ var _ = Describe(`Project`, func() {
 
 	BeforeSuite(func() {
 		// Init chaincode before running any tests
-		expectcc.ResponseOk(cc.From(actors[`authority`]).Init())
+		expectcc.ResponseOk(projectCc.From(actors[`authority`]).Init())
 	})
 
 	Describe("Project", func() {
@@ -59,12 +59,12 @@ var _ = Describe(`Project`, func() {
 				Description:    "Some text",
 			}
 
-			resp := cc.From(actors["someone"]).Invoke("projectPublish", newProject)
+			resp := projectCc.From(actors["someone"]).Invoke("publish", newProject)
 			expectcc.ResponseOk(resp)
 
-			queryResp := cc.From(actors["someone"]).Invoke("projectGet", &schema.ProjectId{
+			queryResp := projectCc.From(actors["someone"]).Invoke("get", &schema.ProjectId{
 				Issuer: "User1@org1.example.com",
-				Name: "proj1",
+				Name:   "proj1",
 			})
 
 			createdProject := expectcc.PayloadIs(queryResp, &schema.Project{}).(*schema.Project)
