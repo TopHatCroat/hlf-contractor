@@ -48,7 +48,7 @@ var _ = Describe(`Project`, func() {
 
 	Describe("Project", func() {
 
-		It("Allow a user to publish a valid project", func() {
+		It("Allow a everyone to publish a valid project", func() {
 			now := ptypes.TimestampNow()
 			newProject := &schema.PublishProject{
 				Name:           "proj1",
@@ -75,6 +75,14 @@ var _ = Describe(`Project`, func() {
 			Expect(createdProject.EndDate.Seconds).To(Equal(now.Seconds))
 			Expect(createdProject.EstimatedValue).To(BeNumerically("==", 10000))
 			Expect(createdProject.Description).To(Equal("Some text"))
+		})
+
+		It("Allows everyone to get the list of projects", func() {
+			queryResp := projectCc.From(actors["someone"]).Invoke("list")
+
+			existingProjects := expectcc.PayloadIs(queryResp, &schema.ProjectList{}).(*schema.ProjectList)
+
+			Expect(len(existingProjects.Items)).To(Equal(1))
 		})
 	})
 })
