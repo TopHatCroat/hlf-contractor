@@ -4,25 +4,7 @@ package io.github.tophatcroat.hlf_contrator.schema;
 option go_package = "schema";
 
 import "google/protobuf/timestamp.proto";
-
-// Application state
-message Application {
-    enum State {
-        APPLIED = 0;
-        ACCEPTED = 1;
-        REJECTED = 2;
-        COMPLETED = 3;
-    }
-
-    // Identification of applier
-    string contractor = 1;
-    // Proposed Price in cents
-    int64 price = 2;
-    State state = 3;
-    string description = 4;
-
-    google.protobuf.Timestamp apply_date = 5;
-}
+import "github.com/mwitkow/go-proto-validators/validator.proto";
 
 // Project state
 message Project {
@@ -38,8 +20,8 @@ message Project {
     string issuer = 1;
     string name = 2;
 
-    // List of applicants for the project
-    repeated Application applications = 3;
+    // List of IDs of applications for the project
+    repeated string applications = 3;
     // Identification of the project Assessor, can be the same as Issuer
     string assessor = 4;
     
@@ -62,4 +44,15 @@ message ProjectId {
 // ProjectList list of projects
 message ProjectList {
     repeated Project items = 1;
+}
+
+// PublishProject transaction payload and event
+message PublishProject {
+    string name = 2 [(validator.field) = {string_not_empty : true}];
+    string assessor = 3;
+    google.protobuf.Timestamp start_date = 4 [(validator.field) = {msg_exists : true}];
+    google.protobuf.Timestamp end_date = 5 [(validator.field) = {msg_exists : true}];
+
+    uint64 estimated_value = 6 [(validator.field) = {int_gt : 0}];
+    string description = 7 [(validator.field) = {string_not_empty : true}];
 }

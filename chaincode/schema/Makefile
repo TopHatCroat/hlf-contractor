@@ -7,5 +7,6 @@ generate:
 		--proto_path=${GOPATH}/src/github.com/google/protobuf/src \
 		--proto_path=. \
 		--go_out=. \
+		--js_out=../../client/src/schema/ \
 		--govalidators_out=. \
 		*.proto

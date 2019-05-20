@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package io.github.tophatcroat.hlf_contrator.schema;
+option go_package = "schema";
+
+import "google/protobuf/timestamp.proto";
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+
+// Application state
+message Application {
+    enum State {
+        APPLIED = 0;
+        ACCEPTED = 1;
+        REJECTED = 2;
+        COMPLETED = 3;
+    }
+
+    // Identification of applier
+    string contractor = 1;
+    // Proposed Price in cents
+    int64 price = 2;
+    State state = 3;
+    string description = 4;
+
+    google.protobuf.Timestamp apply_date = 5;
+}
