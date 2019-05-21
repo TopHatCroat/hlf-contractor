@@ -1,11 +1,9 @@
-package chaincode
+package modules
 
 import (
 	"github.com/TopHatCroat/hlf-contractor/chaincode/schema"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/pkg/errors"
-	"github.com/s7techlab/cckit/extensions/debug"
-	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/identity"
 	"github.com/s7techlab/cckit/router"
 	"github.com/s7techlab/cckit/router/param/defparam"
@@ -22,40 +20,29 @@ var (
 			Add(&schema.PublishProject{})
 )
 
-func NewCC() *router.Chaincode {
-	r := router.New(`project`)
+func CreateProjectRouter(router *router.Group) {
 
-	// Mappings for chaincode state
-	r.Use(mapping.MapStates(StateMappings))
-	// Mappings for chaincode events
-	r.Use(mapping.MapEvents(EventMappings))
+	router.Use(mapping.MapStates(StateMappings))
+	router.Use(mapping.MapEvents(EventMappings))
 
-	// Store info about the chaincode initiator
-	r.Init(owner.InvokeSetFromCreator)
+	router.Group("Project").
+		Query(`List`, queryList).
+		Query(`Get`, queryById, defparam.Proto(&schema.ProjectId{})).
+		Invoke(`Publish`, invokePublish, defparam.Proto(&schema.PublishProject{}))
 
-	// method for debug chaincode state
-	debug.AddHandlers(r, `debug`, owner.Only)
-
-	// Read all method
-	r.Query(`list`, queryProjectList).
-		// Get Project method, takes 2 params: Issuer Id and Project Name
-		Query(`get`, queryProject, defparam.Proto(&schema.ProjectId{})).
-		// txn methods
-		Invoke(`publish`, invokeProjectPublish, defparam.Proto(&schema.PublishProject{}))
-
-	return router.NewChaincode(r)
 }
 
-func queryProjectList(c router.Context) (interface{}, error) {
+func queryList(c router.Context) (interface{}, error) {
 	return c.State().List(&schema.Project{})
 }
 
-func queryProject(c router.Context) (interface{}, error) {
+func queryById(c router.Context) (interface{}, error) {
 	id := c.Param().(*schema.ProjectId)
-	return c.State().Get(id)
+	result, err := c.State().Get(id, &schema.Project{})
+	return result, err
 }
 
-func invokeProjectPublish(c router.Context) (res interface{}, err error) {
+func invokePublish(c router.Context) (res interface{}, err error) {
 	publishData := c.Param().(*schema.PublishProject)
 
 	// Validate the input message defined in schema
@@ -64,11 +51,15 @@ func invokeProjectPublish(c router.Context) (res interface{}, err error) {
 	}
 
 	issuer, err := identity.FromStub(c.Stub())
+	if err != nil {
+		return nil, errors.Wrap(err, "Error obtaining identity")
+	}
+
+	//serializedIdentity := issuer.ToSerialized().String()
 
 	// Create state entry
-	issuerName := issuer.Cert.Subject.CommonName
 	project := &schema.Project{
-		Issuer:         issuerName,
+		Issuer:         issuer.Cert.Subject.CommonName,
 		Assessor:       publishData.Assessor,
 		Name:           publishData.Name,
 		OpenDate:       ptypes.TimestampNow(),
