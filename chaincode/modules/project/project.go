@@ -1,4 +1,4 @@
-package modules
+package project
 
 import (
 	"github.com/TopHatCroat/hlf-contractor/chaincode/schema"
@@ -20,8 +20,7 @@ var (
 			Add(&schema.PublishProject{})
 )
 
-func CreateProjectRouter(router *router.Group) {
-
+func CreateRouter(router *router.Group) {
 	router.Use(mapping.MapStates(StateMappings))
 	router.Use(mapping.MapEvents(EventMappings))
 
@@ -29,7 +28,6 @@ func CreateProjectRouter(router *router.Group) {
 		Query(`List`, queryList).
 		Query(`Get`, queryById, defparam.Proto(&schema.ProjectId{})).
 		Invoke(`Publish`, invokePublish, defparam.Proto(&schema.PublishProject{}))
-
 }
 
 func queryList(c router.Context) (interface{}, error) {

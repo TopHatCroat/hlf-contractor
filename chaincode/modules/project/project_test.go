@@ -1,4 +1,4 @@
-package modules
+package project
 
 import (
 	"github.com/s7techlab/cckit/extensions/debug"
@@ -19,9 +19,12 @@ import (
 )
 
 var (
-	cryptoPath = path.Join("..", "testdata")
-	userPub    = path.Join(cryptoPath, "org1", "user", "user.pem")
-	userPriv   = path.Join(cryptoPath, "org1", "user", "user.key.pem")
+	cryptoPath   = path.Join("..", "..", "testdata")
+	org1UserPub  = path.Join(cryptoPath, "org1", "user", "user.pem")
+	org1UserPriv = path.Join(cryptoPath, "org1", "user", "user.key.pem")
+
+	org2UserPub  = path.Join(cryptoPath, "org2", "user", "user.pem")
+	org2UserPriv = path.Join(cryptoPath, "org2", "user", "user.key.pem")
 
 	adminPub  = path.Join(cryptoPath, "org1", "admin", "admin.pem")
 	adminPriv = path.Join(cryptoPath, "org1", "admin", "admin.key.pem")
@@ -35,14 +38,18 @@ func TestProject(t *testing.T) {
 var _ = Describe("Project", func() {
 	r := router.New("root")
 	debug.AddHandlers(r, "debug", owner.Only)
-	CreateProjectRouter(r)
+	CreateRouter(r)
 	r.Init(owner.InvokeSetFromCreator)
 	projectCc := testcc.NewMockStub("project", router.NewChaincode(r))
 
 	// Load actor certificates
-	actors, err := testcc.IdentitiesFromFiles("SOME_MSP", map[string]string{
-		"admin": adminPub,
-		"user":  userPub},
+	actors, err := testcc.IdentitiesFromFiles(
+		"SOME_MSP",
+		map[string]string{
+			"admin":    adminPub,
+			"org1User": org1UserPub,
+			"org2User": org2UserPub,
+		},
 		ioutil.ReadFile,
 	)
 
@@ -50,7 +57,8 @@ var _ = Describe("Project", func() {
 		panic(err)
 	}
 
-	userIdentitySerialized := actors["user"].Certificate.Subject.CommonName
+	org1UserIdentitySerialized := actors["org1User"].Certificate.Subject.CommonName
+	org2UserIdentitySerialized := actors["org2User"].Certificate.Subject.CommonName
 
 	BeforeSuite(func() {
 		// Init chaincode before running any tests
@@ -62,25 +70,26 @@ var _ = Describe("Project", func() {
 			now := ptypes.TimestampNow()
 			newProject := &schema.PublishProject{
 				Name:           "proj1",
-				Assessor:       userIdentitySerialized,
+				Assessor:       org2UserIdentitySerialized,
 				StartDate:      now,
 				EndDate:        now,
 				EstimatedValue: 10000,
 				Description:    "Some text",
 			}
 
-			resp := projectCc.From(actors["user"]).Invoke("ProjectPublish", newProject)
+			resp := projectCc.From(actors["org1User"]).Invoke("ProjectPublish", newProject)
 			expectcc.ResponseOk(resp)
 
-			queryResp := projectCc.From(actors["user"]).Invoke("ProjectGet", &schema.ProjectId{
-				Issuer: userIdentitySerialized,
+			queryResp := projectCc.From(actors["org1User"]).Invoke("ProjectGet", &schema.ProjectId{
+				Issuer: org1UserIdentitySerialized,
 				Name:   "proj1",
 			})
 
 			createdProject := expectcc.PayloadIs(queryResp, &schema.Project{}).(*schema.Project)
 
 			Expect(createdProject.Name).To(Equal("proj1"))
-			Expect(createdProject.Assessor).To(Equal(userIdentitySerialized))
+			Expect(createdProject.Issuer).To(Equal(org1UserIdentitySerialized))
+			Expect(createdProject.Assessor).To(Equal(org2UserIdentitySerialized))
 			Expect(createdProject.StartDate.Seconds).To(Equal(now.Seconds))
 			Expect(createdProject.EndDate.Seconds).To(Equal(now.Seconds))
 			Expect(createdProject.EstimatedValue).To(BeNumerically("==", 10000))
@@ -88,7 +97,7 @@ var _ = Describe("Project", func() {
 		})
 
 		It("Allows everyone to get the list of projects", func() {
-			queryResp := projectCc.From(actors["user"]).Invoke("ProjectList")
+			queryResp := projectCc.From(actors["org1User"]).Invoke("ProjectList")
 
 			existingProjects := expectcc.PayloadIs(queryResp, &schema.ProjectList{}).(*schema.ProjectList)
 

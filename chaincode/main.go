@@ -2,7 +2,7 @@ package chaincode
 
 import (
 	"fmt"
-	"github.com/TopHatCroat/hlf-contractor/chaincode/modules"
+	"github.com/TopHatCroat/hlf-contractor/chaincode/modules/project"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/s7techlab/cckit/extensions/debug"
 	"github.com/s7techlab/cckit/extensions/owner"
@@ -17,7 +17,7 @@ func CreateChaincode() *router.Chaincode {
 	// method for debug chaincode state
 	debug.AddHandlers(r, "debug", owner.Only)
 
-	modules.CreateProjectRouter(r)
+	project.CreateRouter(r)
 
 	return router.NewChaincode(r)
 }
