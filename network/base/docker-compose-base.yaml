@@ -1,0 +1,123 @@
+version: '2'
+
+services:
+
+  orderer.foi.org:
+    container_name: orderer.foi.org
+    image: hyperledger/fabric-orderer:${IMAGE_TAG}
+    environment:
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+      - ORDERER_KAFKA_VERBOSE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/tls/:/var/hyperledger/orderer/tls
+    - orderer.foi.org:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  anchor.awesome.agency:
+    container_name: anchor.awesome.agency
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=anchor.awesome.agency
+      - CORE_PEER_ADDRESS=anchor.awesome.agency:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer.awesome.agency:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=anchor.awesome.agency:7051
+      - CORE_PEER_LOCALMSPID=AwesomeAgencyMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/awesome.agency/users/:/etc/hyperledger/fabric/users
+        - ../crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
+        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
+        - anchor.awesome.agency:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7053:7053
+
+  peer.awesome.agency:
+    container_name: peer.awesome.agency
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer.awesome.agency
+      - CORE_PEER_ADDRESS=peer.awesome.agency:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.awesome.agency:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=anchor.awesome.agency:7051
+      - CORE_PEER_LOCALMSPID=AwesomeAgencyMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/awesome.agency/peers/peer.awesome.agency/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/awesome.agency/users/:/etc/hyperledger/fabric/users
+        - ../crypto-config/peerOrganizations/awesome.agency/peers/peer.awesome.agency/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
+        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
+        - peer.awesome.agency:/var/hyperledger/production
+
+    ports:
+      - 8051:7051
+      - 8053:7053
+
+  anchor.pharmatic.com:
+    container_name: anchor.pharmatic.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=anchor.pharmatic.com
+      - CORE_PEER_ADDRESS=anchor.pharmatic.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=anchor.pharmatic.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer.pharmatic.com:7051
+      - CORE_PEER_LOCALMSPID=PharmaticMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/pharmatic.com/peers/anchor.pharmatic.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/pharmatic.com/users/:/etc/hyperledger/fabric/users
+        - ../crypto-config/peerOrganizations/pharmatic.com/peers/anchor.pharmatic.com/tls:/etc/hyperledger/fabric/tls
+        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
+        - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
+        - anchor.pharmatic.com:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9053:7053
+
+  peer.pharmatic.com:
+    container_name: peer.pharmatic.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer.pharmatic.com
+      - CORE_PEER_ADDRESS=peer.pharmatic.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.pharmatic.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=anchor.pharmatic.com:7051
+      - CORE_PEER_LOCALMSPID=PharmaticMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/pharmatic.com/users/:/etc/hyperledger/fabric/users
+        - ../crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls:/etc/hyperledger/fabric/tls
+        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
+        - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
+        - peer.pharmatic.com:/var/hyperledger/production
+    ports:
+      - 10051:7051
+      - 10053:7053

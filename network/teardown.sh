@@ -8,7 +8,7 @@
 set -e
 
 # Shut down the Docker containers for the system tests.
-docker-compose -f docker-compose.yml kill && docker-compose -f docker-compose.yml down
+docker-compose -f docker-compose.yaml kill && docker-compose -f docker-compose.yaml down --volumes --remove-orphans
 
 # remove the local state
 rm -f ~/.hfc-key-store/*
