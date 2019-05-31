@@ -1,14 +1,25 @@
-## Basic Network Config
+## Contractor Network Config
 
-Note that this basic configuration uses pre-generated certificates and
-key material, and also has predefined transactions to initialize a 
-channel named "mychannel".
+This is an basic network for Contractor app.
+There are multiple organizations:
+* Orderer organization - FOI
+* Development organization - Awesome Agency
+* Contractor organization - Pharmatic
 
-To regenerate this material, simply run ``generate.sh``.
+#### Instructions
 
-To start the network, run ``start.sh``.
-To stop it, run ``stop.sh``
-To completely remove all incriminating evidence of the network
-on your system, run ``teardown.sh``.
+* Run `generate.sh`
+  * Generates cryptographic material
+  * Creates genesis blocks for orderer and other organizations
+  * Creates `docker-compose.yaml` from `docker-compose-template.yaml`
 
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+* Run `start.sh`
+  * Removes any previously created networks
+  * Starts network by running `docker-compose`
+  * Create and join organization to the *default* channel
+
+* Run ``stop.sh``
+  * Temporarily stop network
+
+* Run ``teardown.sh``.
+  * Removes any previous networks

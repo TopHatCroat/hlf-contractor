@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -ev
 
 docker-compose -f docker-compose.yaml down --volumes --remove-orphans

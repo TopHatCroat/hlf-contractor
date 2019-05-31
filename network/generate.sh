@@ -1,9 +1,5 @@
 #!/bin/sh
-#
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+
 export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=default
@@ -57,7 +53,6 @@ if [ "$?" -ne 0 ]; then
 fi
 
 replacePrivateKey
-copyOrdererCaCertificate
 
 # generate genesis block for orderer
 configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
