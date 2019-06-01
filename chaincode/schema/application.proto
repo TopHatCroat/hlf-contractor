@@ -17,10 +17,28 @@ message Application {
 
     // Identification of applier
     string contractor = 1;
+    string projectId = 2;
     // Proposed Price in cents
-    int64 price = 2;
-    State state = 3;
-    string description = 4;
+    int64 price = 3;
+    State state = 4;
+    string description = 5;
 
-    google.protobuf.Timestamp apply_date = 5;
+    google.protobuf.Timestamp apply_date = 6;
+}
+
+message ApplicationId {
+    string contractor = 1;
+    string projectId = 2;
+}
+
+message ApplicationList {
+    repeated Application items = 1;
+}
+
+message PublishApplication {
+    string projectName = 1;
+    string projectIssuer = 2;
+    // Proposed Price in cents
+    int64 price = 3;
+    string description = 5;
 }

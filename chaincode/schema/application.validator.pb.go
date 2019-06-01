@@ -5,11 +5,11 @@ package schema
 
 import (
 	fmt "fmt"
-	math "math"
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 	_ "github.com/mwitkow/go-proto-validators"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,5 +23,21 @@ func (this *Application) Validate() error {
 			return github_com_mwitkow_go_proto_validators.FieldError("ApplyDate", err)
 		}
 	}
+	return nil
+}
+func (this *ApplicationId) Validate() error {
+	return nil
+}
+func (this *ApplicationList) Validate() error {
+	for _, item := range this.Items {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Items", err)
+			}
+		}
+	}
+	return nil
+}
+func (this *PublishApplication) Validate() error {
 	return nil
 }

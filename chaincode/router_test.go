@@ -1,4 +1,4 @@
-package project
+package chaincode
 
 import (
 	"github.com/s7techlab/cckit/extensions/debug"
@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	cryptoPath   = path.Join("..", "..", "testdata")
+	cryptoPath   = path.Join("testdata")
 	org1UserPub  = path.Join(cryptoPath, "org1", "user", "user.pem")
 	org1UserPriv = path.Join(cryptoPath, "org1", "user", "user.key.pem")
 
@@ -40,7 +40,7 @@ var _ = Describe("Project", func() {
 	debug.AddHandlers(r, "debug", owner.Only)
 	CreateRouter(r)
 	r.Init(owner.InvokeSetFromCreator)
-	projectCc := testcc.NewMockStub("project", router.NewChaincode(r))
+	cc := testcc.NewMockStub("project", router.NewChaincode(r))
 
 	// Load actor certificates
 	actors, err := testcc.IdentitiesFromFiles(
@@ -62,7 +62,7 @@ var _ = Describe("Project", func() {
 
 	BeforeSuite(func() {
 		// Init chaincode before running any tests
-		expectcc.ResponseOk(projectCc.From(actors["admin"]).Init())
+		expectcc.ResponseOk(cc.From(actors["admin"]).Init())
 	})
 
 	Describe("Project", func() {
@@ -77,10 +77,10 @@ var _ = Describe("Project", func() {
 				Description:    "Some text",
 			}
 
-			resp := projectCc.From(actors["org1User"]).Invoke("ProjectPublish", newProject)
+			resp := cc.From(actors["org1User"]).Invoke("ProjectPublish", newProject)
 			expectcc.ResponseOk(resp)
 
-			queryResp := projectCc.From(actors["org1User"]).Invoke("ProjectGet", &schema.ProjectId{
+			queryResp := cc.From(actors["org1User"]).Invoke("ProjectGet", &schema.ProjectId{
 				Issuer: org1UserIdentitySerialized,
 				Name:   "proj1",
 			})
@@ -97,11 +97,42 @@ var _ = Describe("Project", func() {
 		})
 
 		It("Allows everyone to get the list of projects", func() {
-			queryResp := projectCc.From(actors["org1User"]).Invoke("ProjectList")
+			queryResp := cc.From(actors["org1User"]).Invoke("ProjectList")
 
 			existingProjects := expectcc.PayloadIs(queryResp, &schema.ProjectList{}).(*schema.ProjectList)
 
 			Expect(len(existingProjects.Items)).To(Equal(1))
+		})
+
+		It("Allow a user to publish a valid application to a project", func() {
+			projectResp := cc.From(actors["org1User"]).Invoke("ProjectGet", &schema.ProjectId{
+				Issuer: org1UserIdentitySerialized,
+				Name:   "proj1",
+			})
+
+			createdProject := expectcc.PayloadIs(projectResp, &schema.Project{}).(*schema.Project)
+
+			newApplication := &schema.PublishApplication{
+				ProjectIssuer: createdProject.Issuer,
+				ProjectName:   createdProject.Name,
+				Price:         100000,
+				Description:   "Some description",
+			}
+
+			resp := cc.From(actors["org2User"]).Invoke("ApplicationPublish", newApplication)
+			expectcc.ResponseOk(resp)
+
+			applicationResp := cc.From(actors["org1User"]).Invoke("ApplicationGet", &schema.ApplicationId{
+				Contractor: org2UserIdentitySerialized,
+				//ProjectId:  createdProjectId.String(),
+			})
+
+			createdApplication := expectcc.PayloadIs(applicationResp, &schema.Application{}).(*schema.Application)
+			Expect(createdApplication.Contractor).To(Equal(org2UserIdentitySerialized))
+			Expect(createdApplication.Description).To(Equal("Some description"))
+			//Expect(createdApplication.ProjectId).To(Equal(createdProjectId.String()))
+			Expect(createdApplication.Price).To(BeNumerically("==", 100000))
+			Expect(createdApplication.State).To(Equal(schema.Application_APPLIED))
 		})
 	})
 })

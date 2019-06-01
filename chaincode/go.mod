@@ -9,5 +9,5 @@ require (
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
 	github.com/pkg/errors v0.8.1
-	github.com/s7techlab/cckit v0.4.5
+	github.com/s7techlab/cckit v0.5.3
 )

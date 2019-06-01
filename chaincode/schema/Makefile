@@ -10,3 +10,4 @@ generate:
 		--js_out=../../client/src/schema/ \
 		--govalidators_out=. \
 		*.proto
+	@echo "Success"

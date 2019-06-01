@@ -6,6 +6,8 @@ option go_package = "schema";
 import "google/protobuf/timestamp.proto";
 import "github.com/mwitkow/go-proto-validators/validator.proto";
 
+import "application.proto";
+
 // Project state
 message Project {
 
@@ -21,7 +23,7 @@ message Project {
     string name = 2;
 
     // List of IDs of applications for the project
-    repeated string applications = 3;
+    repeated string applicationsIds = 3;
     // Identification of the project Assessor, can be the same as Issuer
     string assessor = 4;
     
@@ -33,6 +35,8 @@ message Project {
     uint64 estimated_value = 8;
     State state = 9;
     string description = 10;
+
+    repeated Application applications = 11;
 }
 
 // ProjectId identifier part
