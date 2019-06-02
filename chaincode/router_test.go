@@ -123,14 +123,16 @@ var _ = Describe("Project", func() {
 			expectcc.ResponseOk(resp)
 
 			applicationResp := cc.From(actors["org1User"]).Invoke("ApplicationGet", &schema.ApplicationId{
-				Contractor: org2UserIdentitySerialized,
-				//ProjectId:  createdProjectId.String(),
+				Contractor:    org2UserIdentitySerialized,
+				ProjectName:   createdProject.Name,
+				ProjectIssuer: createdProject.Issuer,
 			})
 
 			createdApplication := expectcc.PayloadIs(applicationResp, &schema.Application{}).(*schema.Application)
 			Expect(createdApplication.Contractor).To(Equal(org2UserIdentitySerialized))
 			Expect(createdApplication.Description).To(Equal("Some description"))
-			//Expect(createdApplication.ProjectId).To(Equal(createdProjectId.String()))
+			Expect(createdApplication.ProjectName).To(Equal(createdProject.Name))
+			Expect(createdApplication.ProjectIssuer).To(Equal(createdProject.Issuer))
 			Expect(createdApplication.Price).To(BeNumerically("==", 100000))
 			Expect(createdApplication.State).To(Equal(schema.Application_APPLIED))
 		})

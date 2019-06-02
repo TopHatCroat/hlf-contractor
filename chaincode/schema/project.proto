@@ -23,7 +23,7 @@ message Project {
     string name = 2;
 
     // List of IDs of applications for the project
-    repeated string applicationsIds = 3;
+    repeated ApplicationId applicationsIds = 3;
     // Identification of the project Assessor, can be the same as Issuer
     string assessor = 4;
     

@@ -31,36 +31,45 @@ func InvokePublish(c router.Context) (res interface{}, err error) {
 		return nil, errors.Wrap(err, "Error obtaining identity")
 	}
 
-	projectId := schema.ProjectId{
+	projectId := &schema.ProjectId{
 		Issuer: publishData.ProjectIssuer,
 		Name:   publishData.ProjectName,
 	}
 
 	projectResult, err := c.State().Get(projectId, &schema.Project{})
 	if err != nil {
-		return nil, errors.Wrapf(err, "Could not find project with name = %s", projectId)
+		return nil, errors.Wrapf(err, "Could not find project with id = %s", projectId)
 	}
 
-	projectResultId := &schema.ProjectId{
-		Name:   projectResult.(schema.Project).Name,
-		Issuer: projectResult.(schema.Project).Issuer,
-	}
-
-	//serializedIdentity := contractor.ToSerialized().String()
+	project := projectResult.(*schema.Project)
 
 	// Create state entry
-	project := &schema.Application{
-		Contractor:  contractor.Cert.Subject.CommonName,
-		ProjectId:   projectResultId.String(),
-		Price:       publishData.Price,
-		State:       schema.Application_APPLIED,
-		ApplyDate:   ptypes.TimestampNow(),
-		Description: publishData.Description,
+	application := &schema.Application{
+		Contractor:    contractor.Cert.Subject.CommonName,
+		ProjectName:   project.Name,
+		ProjectIssuer: project.Issuer,
+		Price:         publishData.Price,
+		State:         schema.Application_APPLIED,
+		ApplyDate:     ptypes.TimestampNow(),
+		Description:   publishData.Description,
+	}
+
+	applicationId := &schema.ApplicationId{
+		ProjectIssuer: application.ProjectIssuer,
+		ProjectName:   application.ProjectName,
+		Contractor:    application.Contractor,
+	}
+
+	project.ApplicationsIds = append(project.ApplicationsIds, applicationId)
+
+	err = c.State().Put(project)
+	if err != nil {
+		return nil, err
 	}
 
 	if err = c.Event().Set(publishData); err != nil {
 		return nil, err
 	}
 
-	return project, c.State().Insert(project)
+	return project, c.State().Insert(application)
 }

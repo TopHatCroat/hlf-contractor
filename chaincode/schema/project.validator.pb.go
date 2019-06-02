@@ -18,6 +18,13 @@ var _ = fmt.Errorf
 var _ = math.Inf
 
 func (this *Project) Validate() error {
+	for _, item := range this.ApplicationsIds {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("ApplicationsIds", err)
+			}
+		}
+	}
 	if this.OpenDate != nil {
 		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.OpenDate); err != nil {
 			return github_com_mwitkow_go_proto_validators.FieldError("OpenDate", err)

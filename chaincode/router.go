@@ -36,6 +36,6 @@ func CreateRouter(router *router.Group) {
 
 	router.Group("Application").
 		Query(`GetByContractor`, application.QueryByContractor).
-		Query(`Get`, application.QueryById, defparam.Proto(&schema.Application{})).
+		Query(`Get`, application.QueryById, defparam.Proto(&schema.ApplicationId{})).
 		Invoke(`Publish`, application.InvokePublish, defparam.Proto(&schema.PublishApplication{}))
 }
