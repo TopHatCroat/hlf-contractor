@@ -7,6 +7,7 @@ Package schema is a generated protocol buffer package.
 It is generated from these files:
 	application.proto
 	project.proto
+	user.proto
 
 It has these top-level messages:
 	Application
@@ -17,6 +18,9 @@ It has these top-level messages:
 	ProjectId
 	ProjectList
 	PublishProject
+	User
+	RegisterUser
+	UserResponse
 */
 package schema
 

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package io.github.tophatcroat.hlf_contrator.schema;
+option go_package = "schema";
+
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+
+// User state
+message User {
+
+    enum State {
+        VALID = 0;
+        BLOCKED = 1;
+    }
+
+    string email = 1;
+    string name = 2;
+    double balance = 3;
+    State state = 9;
+}
+
+// RegisterUser transaction payload and event
+message RegisterUser {
+    string email = 1 [(validator.field) = {regex: "^.*@.*$"}];
+    string password = 2 [(validator.field) = {string_not_empty : true}];
+    string name = 3 [(validator.field) = {string_not_empty : true}];
+}
+
+message UserResponse {
+    string email = 1;
+    string name = 2;
+    User.State state = 3;
+}
