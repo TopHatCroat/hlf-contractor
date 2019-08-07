@@ -11,19 +11,18 @@ PeerOrgs:
       - Hostname: anchor
       - Hostname: peer
     Users:
-      Count: 2
+      Count: 1
 
   - Name: Pharmatic AG
     Domain: pharmatic.com
     Specs:
-      - Hostname: anchor
       - Hostname: peer
     Users:
-      Count: 2
+      Count: 1
 
   - Name: Magik Inc.
     Domain: magik.dev
     Specs:
-      - Hostname: anchor
+      - Hostname: peer
     Users:
       Count: 1

@@ -78,6 +78,14 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
+# generate peer transaction
+configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/pharmaticMSPanchors.tx \
+            -channelID $CHANNEL_NAME -asOrg PharmaticMSP
+if [ "$?" -ne 0 ]; then
+  echo "Failed to generate anchor peer update for Pharmatic AG..."
+  exit 1
+fi
+
 # generate anchor peer transaction
 #configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./config/magikMSPanchors.tx \
 #            -channelID $CHANNEL_NAME -asOrg MagikMSP
@@ -86,10 +94,3 @@ fi
 #  exit 1
 #fi
 
-# generate anchor peer transaction
-configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/pharmaticMSPanchors.tx \
-            -channelID $CHANNEL_NAME -asOrg PharmaticMSP
-if [ "$?" -ne 0 ]; then
-  echo "Failed to generate anchor peer update for Pharmatic AG..."
-  exit 1
-fi

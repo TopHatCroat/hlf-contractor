@@ -4,8 +4,8 @@ volumes:
   orderer.foi.org:
   anchor.awesome.agency:
   peer.awesome.agency:
-  anchor.pharmatic.com:
   peer.pharmatic.com:
+  peer.magik.com:
 
 networks:
   basic:
@@ -60,21 +60,13 @@ services:
     networks:
       - basic
 
-  peer.awesome.agency:
-    container_name: peer.awesome.agency
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: peer.awesome.agency
-    networks:
-      - basic
-
-  anchor.pharmatic.com:
-    container_name: anchor.pharmatic.com
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: anchor.pharmatic.com
-    networks:
-      - basic
+  # peer.awesome.agency:
+  #   container_name: peer.awesome.agency
+  #   extends:
+  #     file:  base/docker-compose-base.yaml
+  #     service: peer.awesome.agency
+  #   networks:
+  #     - basic
 
   peer.pharmatic.com:
     container_name: peer.pharmatic.com
@@ -83,3 +75,11 @@ services:
       service: peer.pharmatic.com
     networks:
       - basic
+
+  # peer.magik.com:
+  #   container_name: peer.magik.com
+  #   extends:
+  #     file:  base/docker-compose-base.yaml
+  #     service: peer.magik.com
+  #   networks:
+  #     - basic
