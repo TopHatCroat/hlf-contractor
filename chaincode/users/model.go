@@ -1,4 +1,4 @@
-package user
+package main
 
 type State string
 

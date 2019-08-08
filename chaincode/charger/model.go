@@ -1,4 +1,4 @@
-package charge
+package main
 
 import "time"
 
