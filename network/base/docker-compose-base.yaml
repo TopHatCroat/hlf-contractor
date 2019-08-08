@@ -99,25 +99,25 @@ services:
       - 10051:7051
       - 10053:7053
 
-  peer.magik.com:
-    container_name: peer.magik.com
+  peer.magik.org:
+    container_name: peer.magik.org
     extends:
       file: peer-base.yaml
       service: peer-base
     environment:
-      - CORE_PEER_ID=peer.magik.com
-      - CORE_PEER_ADDRESS=peer.magik.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.magik.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=anchor.magik.com:7051
+      - CORE_PEER_ID=peer.magik.org
+      - CORE_PEER_ADDRESS=peer.magik.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.magik.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=anchor.magik.org:7051
       - CORE_PEER_LOCALMSPID=PharmaticMSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../crypto-config/peerOrganizations/magik.com/peers/peer.magik.com/msp:/etc/hyperledger/fabric/msp
-        - ../crypto-config/peerOrganizations/magik.com/users/:/etc/hyperledger/fabric/users
-        - ../crypto-config/peerOrganizations/magik.com/peers/peer.magik.com/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/peerOrganizations/magik.org/peers/peer.magik.org/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/magik.org/users/:/etc/hyperledger/fabric/users
+        - ../crypto-config/peerOrganizations/magik.org/peers/peer.magik.org/tls:/etc/hyperledger/fabric/tls
         - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
         - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
-        - peer.magik.com:/var/hyperledger/production
+        - peer.magik.org:/var/hyperledger/production
     ports:
       - 11051:7051
       - 11053:7053

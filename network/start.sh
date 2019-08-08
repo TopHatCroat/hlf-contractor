@@ -27,11 +27,11 @@ docker exec \
        anchor.awesome.agency \
        peer channel join -b default.block
 
-# Join anchor.magik.dev to the channel.
+# Join anchor.magik.org to the channel.
 #docker exec \
 #       -e "CORE_PEER_LOCALMSPID=MagikMSP" \
 #       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp" \
-#       anchor.magik.dev \
+#       anchor.magik.org \
 #       peer channel join -b default.block
 
 # Join anchor.pharmatic.com to the channel.

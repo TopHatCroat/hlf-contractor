@@ -35,7 +35,7 @@ function replacePrivateKey() {
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/PHARMATIC_CA_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose.yaml
-  cd crypto-config/peerOrganizations/magik.dev/ca/
+  cd crypto-config/peerOrganizations/magik.org/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/MAGIK_CA_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose.yaml
@@ -55,7 +55,8 @@ fi
 replacePrivateKey
 
 # generate genesis block for orderer
-configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis \
+            -outputBlock ./channel-artifacts/genesis.block
 
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate orderer genesis block..."
@@ -87,10 +88,10 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # generate anchor peer transaction
-#configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./config/magikMSPanchors.tx \
-#            -channelID $CHANNEL_NAME -asOrg MagikMSP
-#if [ "$?" -ne 0 ]; then
-#  echo "Failed to generate anchor peer update for Magik Inc..."
-#  exit 1
-#fi
+configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/magikMSPanchors.tx \
+            -channelID $CHANNEL_NAME -asOrg MagikMSP
+if [ "$?" -ne 0 ]; then
+ echo "Failed to generate anchor peer update for Magik Intl..."
+ exit 1
+fi
 

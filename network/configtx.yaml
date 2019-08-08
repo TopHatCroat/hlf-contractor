@@ -87,7 +87,7 @@ Organizations:
 
         ID: MagikMSP
 
-        MSPDir: crypto-config/peerOrganizations/magik.dev/msp
+        MSPDir: crypto-config/peerOrganizations/magik.org/msp
 
         Policies:
             Readers:
@@ -101,7 +101,7 @@ Organizations:
                 Rule: "OR('MagikMSP.admin')"
 
         AnchorPeers:
-            - Host: peer.magik.dev
+            - Host: peer.magik.org
               Port: 7051
 
 ################################################################################

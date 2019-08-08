@@ -20,8 +20,8 @@ PeerOrgs:
     Users:
       Count: 1
 
-  - Name: Magik Inc.
-    Domain: magik.dev
+  - Name: Magik Intl.
+    Domain: magik.org
     Specs:
       - Hostname: peer
     Users:

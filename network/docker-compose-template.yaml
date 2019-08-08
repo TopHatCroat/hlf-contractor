@@ -5,7 +5,7 @@ volumes:
   anchor.awesome.agency:
   peer.awesome.agency:
   peer.pharmatic.com:
-  peer.magik.com:
+  peer.magik.org:
 
 networks:
   basic:
@@ -76,10 +76,10 @@ services:
     networks:
       - basic
 
-  # peer.magik.com:
-  #   container_name: peer.magik.com
+  # peer.magik.org:
+  #   container_name: peer.magik.org
   #   extends:
   #     file:  base/docker-compose-base.yaml
-  #     service: peer.magik.com
+  #     service: peer.magik.org
   #   networks:
   #     - basic
