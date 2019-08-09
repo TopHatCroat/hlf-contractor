@@ -16,11 +16,15 @@ const (
 type Entity struct {
 	Contractor string    `json:"contractor,omitempty"`
 	ChargeId   string    `json:"charge_id,omitempty"`
-	UserEmail  string    `json:"user_email,omitempty"`
-	Price      string    `json:"price,omitempty"`
+	User       string    `json:"user_email,omitempty"`
+	Price      int       `json:"price,omitempty"`
 	StartTime  time.Time `json:"start_date,omitempty"`
 	EndTime    time.Time `json:"end_date,omitempty"`
 	State      State     `json:"state,omitempty"`
+}
+
+func (c Entity) Key() ([]string, error) {
+	return []string{TypeName, c.Contractor, c.ChargeId}, nil
 }
 
 type StartTransaction struct {
