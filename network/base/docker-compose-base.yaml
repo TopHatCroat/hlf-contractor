@@ -1,7 +1,6 @@
 version: '2'
 
-services:
-
+services: 
   orderer.foi.org:
     container_name: orderer.foi.org
     image: hyperledger/fabric-orderer:${IMAGE_TAG}
@@ -25,7 +24,6 @@ services:
     - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
     - ../crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp:/var/hyperledger/orderer/msp
     - ../crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/tls/:/var/hyperledger/orderer/tls
-    - orderer.foi.org:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
 
@@ -47,7 +45,7 @@ services:
         - ../crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls:/etc/hyperledger/fabric/tls
         - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
         - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
-        - anchor.awesome.agency:/var/hyperledger/production
+        - ../../chaincode/users:/etc/hyperledger/fabric/chaincode/users
     ports:
       - 7051:7051
       - 7053:7053
@@ -70,7 +68,7 @@ services:
         - ../crypto-config/peerOrganizations/awesome.agency/peers/peer.awesome.agency/tls:/etc/hyperledger/fabric/tls
         - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
         - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
-        - peer.awesome.agency:/var/hyperledger/production
+        - ../../chaincode/users:/etc/hyperledger/fabric/chaincode/users
 
     ports:
       - 8051:7051
@@ -94,7 +92,7 @@ services:
         - ../crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls:/etc/hyperledger/fabric/tls
         - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
         - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
-        - peer.pharmatic.com:/var/hyperledger/production
+        - ../../chaincode/charger:/etc/hyperledger/fabric/chaincode/charger
     ports:
       - 10051:7051
       - 10053:7053
@@ -115,9 +113,9 @@ services:
         - ../crypto-config/peerOrganizations/magik.org/peers/peer.magik.org/msp:/etc/hyperledger/fabric/msp
         - ../crypto-config/peerOrganizations/magik.org/users/:/etc/hyperledger/fabric/users
         - ../crypto-config/peerOrganizations/magik.org/peers/peer.magik.org/tls:/etc/hyperledger/fabric/tls
-        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
         - ../crypto-config/ordererOrganizations/foi.org/msp/tlscacerts:/etc/hyperledger/fabric/orderer_tls
-        - peer.magik.org:/var/hyperledger/production
+        - ../channel-artifacts/:/var/hyperledger/fabric/artifacts
+        - ../../chaincode/charger:/etc/hyperledger/fabric/chaincode/charger
     ports:
       - 11051:7051
       - 11053:7053

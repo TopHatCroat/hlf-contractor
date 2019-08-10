@@ -9,6 +9,7 @@ volumes:
 
 networks:
   basic:
+
 services:
   ca.awesome.agency:
     image: hyperledger/fabric-ca:${IMAGE_TAG}
@@ -49,6 +50,14 @@ services:
       file:   base/docker-compose-base.yaml
       service: orderer.foi.org
     container_name: orderer.foi.org
+    networks:
+      - basic
+
+  api.awesome.agency:
+    extends:
+      file: peer-base.yaml
+      service: cli-base
+    container_name: api.awesome.agency
     networks:
       - basic
 

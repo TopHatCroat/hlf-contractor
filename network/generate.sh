@@ -1,8 +1,6 @@
 #!/bin/sh
 
-export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
-export FABRIC_CFG_PATH=${PWD}
-CHANNEL_NAME=default
+source ./shared.sh
 
 # remove previous crypto material and config transactions
 rm -fr channel-artifacts/*
