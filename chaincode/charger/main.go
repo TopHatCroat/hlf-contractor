@@ -11,7 +11,7 @@ import (
 func CreateChaincode() *router.Chaincode {
 	r := router.New("root")
 
-	r.Init(owner.InvokeSetFromCreator)
+	r.Init(Init)
 
 	// method for debug chaincode state
 	debug.AddHandlers(r, "debug", owner.Only)
