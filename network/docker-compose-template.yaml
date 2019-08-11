@@ -55,7 +55,7 @@ services:
 
   api.awesome.agency:
     extends:
-      file: peer-base.yaml
+      file: base/peer-base.yaml
       service: cli-base
     container_name: api.awesome.agency
     networks:

@@ -29,12 +29,6 @@ docker exec \
        anchor.awesome.agency \
        peer channel join -b /var/hyperledger/fabric/artifacts/default.block
 
-# docker exec \
-#        -e "CORE_PEER_LOCALMSPID=AwesomeAgencyMSP"\
-#        -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/users/Admin@awesome.agency/msp" \
-#        peer.awesome.agency \
-#        peer channel join -b default.block \
-
 # Join anchor.pharmatic.com to the channel.
 docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/users/Admin@pharmatic.com/msp" \
@@ -42,10 +36,10 @@ docker exec \
       peer channel join -b /var/hyperledger/fabric/artifacts/default.block
 
 # Join anchor.magik.org to the channel.
-#docker exec \
+# docker exec \
 #       -e "CORE_PEER_LOCALMSPID=MagikMSP" \
 #       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp" \
-#       anchor.magik.org \
+#       peer.magik.org \
 #       peer channel join -b /var/hyperledger/fabric/artifacts/default.block
 
 # Install user chaincode on Awseome.agency peer and anchor
