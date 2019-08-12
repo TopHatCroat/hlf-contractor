@@ -23,6 +23,9 @@ function register_and_enroll() {
                             --url https://$username:password@ca.awesome.agency:7054 \
                             --mspdir ../$USER_MSP_DIR/$username
 
+    mkdir -p $USER_MSP_DIR/$username/admincerts
+    cp $USER_MSP_DIR/$username/signcerts/cert.pem $USER_MSP_DIR/$username/admincerts/cert.pem
+
     echo "User $username enrolled"
 }
 
@@ -90,4 +93,18 @@ docker exec \
 #         -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["3"]}' -P "OR ('MagikMSP.peer')" \
 #         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
+# Wait for chaincode instantiation to propagate
+sleep $FABRIC_WAIT_TIME
+
+docker exec \
+      -e "CORE_PEER_ADDRESS=peer.pharmatic.com:7051" \
+      -e "CORE_PEER_LOCALMSPID=PharmaticMSP" \
+      -e "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.crt" \
+      -e "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.key" \
+      -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt" \
+      -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
+      api.awesome.agency \
+      peer chaincode query -o orderer.foi.org:7050 -n charger \
+        -C $CHANNEL_NAME -c '{"Args":["QueryAll"]}' \
+        --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 

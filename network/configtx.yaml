@@ -1,12 +1,4 @@
 ---
-################################################################################
-#
-#   Section: Organizations
-#
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
-#
-################################################################################
 Organizations:
     - &OrdererOrg
         Name: OrdererOrg
