@@ -60,6 +60,15 @@ var _ = Describe("Users", func() {
 	})
 
 	Describe("Users", func() {
+		It("Empty list result returns an empty array", func() {
+			queryResp := cc.From(globalActors["admin"]).Invoke("QueryAll")
+
+			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
+
+			Expect(chargeTransactions).ToNot(BeNil())
+			Expect(len(chargeTransactions)).To(Equal(0))
+		})
+
 		It("Allow a global admin to get a full user response", func() {
 			resp := cc.From(globalActors["admin"]).Invoke("QueryById", globalMSP, globalUserUsername)
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)

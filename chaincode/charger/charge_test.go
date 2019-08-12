@@ -82,6 +82,22 @@ var _ = Describe("Charge", func() {
 	})
 
 	Describe("Charge", func() {
+		It("Empty list result returns an empty array", func() {
+			queryResp := cc.From(globalActors["user"]).Invoke("QueryAll")
+
+			chargeTransactions := expectcc.PayloadIs(queryResp, &[]charge.Entity{}).([]charge.Entity)
+
+			Expect(chargeTransactions).ToNot(BeNil())
+			Expect(len(chargeTransactions)).To(Equal(0))
+		})
+
+		It("Throws error when global admin tries to get non existent charge", func() {
+			resp := cc.From(globalActors["admin"]).Invoke("QueryById", globalMSP, "doesNotExists")
+
+			Expect(resp.Status).To(BeNumerically("==", 500))
+			Expect(resp.Message).To(ContainSubstring("doesNotExists"))
+		})
+
 		It("Allow a global user to start charge transaction", func() {
 			fakeChargeStartTime.Do()
 

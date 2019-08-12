@@ -5,6 +5,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/s7techlab/cckit/identity"
 	"github.com/s7techlab/cckit/router"
+	"reflect"
 )
 
 func getOrCreateUser(ctx router.Context, mspId, username string) (*Entity, error) {
@@ -45,6 +46,10 @@ func QueryAll(c router.Context) (interface{}, error) {
 	users, err := c.State().List(TypeName, &Entity{})
 	if err != nil {
 		return nil, err
+	}
+
+	if reflect.ValueOf(users).IsNil() {
+		return []Entity{}, nil
 	}
 
 	return users, nil

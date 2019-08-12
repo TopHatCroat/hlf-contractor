@@ -9,6 +9,7 @@ import (
 	"github.com/s7techlab/cckit/identity"
 	"github.com/s7techlab/cckit/router"
 	"math/rand"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -51,7 +52,16 @@ func QueryById(c router.Context) (interface{}, error) {
 }
 
 func QueryAll(c router.Context) (interface{}, error) {
-	return c.State().List(charge.TypeName, &charge.Entity{})
+	res, err := c.State().List(charge.TypeName, &charge.Entity{})
+	if err != nil {
+		return nil, err
+	}
+
+	if reflect.ValueOf(res).IsNil() {
+		return []charge.Entity{}, nil
+	}
+
+	return res, nil
 }
 
 func InvokeStartChargeTransaction(c router.Context) (res interface{}, err error) {
