@@ -22,7 +22,7 @@ func New(configPath string) (*Client, error) {
 		fmt.Printf("failed to create new SDK: %s\n", err)
 	}
 
-	sdkCtxProvider := sdk.Context(fabsdk.WithOrg("AwesomeAgency"), fabsdk.WithUser("admin"))
+	sdkCtxProvider := sdk.Context(fabsdk.WithOrg("AwesomeAgency"))
 	sdkCtx, err := sdkCtxProvider()
 	if err != nil {
 		fmt.Printf("failed to create new SDK: %s\n", err)
@@ -37,12 +37,22 @@ func New(configPath string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) RegisterUser(username, password string) error {
+func (c *Client) Register(username, password string) error {
 	req := &api.RegistrationRequest{
 		Name:   username,
 		Secret: password,
 	}
 
 	_, err := c.CA.Register(req)
+	return err
+}
+
+func (c *Client) Login(username, password string) error {
+	req := &api.EnrollmentRequest{
+		Name:   username,
+		Secret: password,
+	}
+
+	err := c.CA.Enroll(req)
 	return err
 }

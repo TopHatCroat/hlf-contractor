@@ -51,7 +51,7 @@ client:
 
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
-    path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}
+    path: ${CRYPTO_CONFIG_FIXTURES_PATH}
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -83,9 +83,9 @@ client:
     # [Optional]. Client key and cert for TLS handshake with peers and orderers
     client:
       key:
-        path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
+        path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
       cert:
-        path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt
+        path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt
 
 #
 # [Optional]. But most apps would have this section so that channel objects can be constructed
@@ -234,7 +234,7 @@ channels:
         # Default: true
         eventSource: true
 
-      peer.awesome.agency:
+#      peer.awesome.agency:
       peer.pharmatic.com:
 #      peer.magik.org:
 
@@ -321,7 +321,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/ordererOrganizations/foi.org/tlsca/tlsca.foi.org-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/ordererOrganizations/foi.org/tlsca/tlsca.foi.org-cert.pem
 
 #
 # List of peers to send various requests to, including endorsement, query
@@ -347,7 +347,7 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/anchor.awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
 
   peer.awesome.agency:
     url: peer.awesome.agency:7051
@@ -361,7 +361,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
 
   peer.pharmatic.com:
     url: peer.pharmatic.com:7051
@@ -375,7 +375,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
 
   peer.magik.org:
     url: peer.magik.org:7051
@@ -389,7 +389,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/tlsca/tlsca.magik.org-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/tlsca/tlsca.magik.org-cert.pem
 
 
 #
@@ -403,13 +403,13 @@ certificateAuthorities:
     url: https://ca.awesome.agency:7054
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
         key:
-          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
         cert:
-          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
@@ -422,12 +422,12 @@ certificateAuthorities:
   ca.pharmatic.com:
     url: https://ca.pharmatic.com:8054
     tlsCACerts:
-      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
       client:
         key:
-          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.key
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.key
         cert:
-          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.crt
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.crt
 
     registrar:
       enrollId: admin
@@ -439,13 +439,13 @@ certificateAuthorities:
 #    url: https://ca.magik.org:8054
 #    tlsCACerts:
 #      # Comma-Separated list of paths
-#      path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/tlsca/tlsca.magik.org-cert.pem
+#      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/tlsca/tlsca.magik.org-cert.pem
 #      # Client key and cert for SSL handshake with Fabric CA
 #      client:
 #        key:
-#          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/users/User1@magik.org/tls/client.key
+#          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/users/User1@magik.org/tls/client.key
 #        cert:
-#          path: ${FABRIC_SDK_GO_PROJECT_PATH}/${CRYPTOCONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/users/User1@magik.org/tls/client.crt
+#          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/users/User1@magik.org/tls/client.crt
 #
 #      # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
 #      # needed to enroll and invoke new users.
