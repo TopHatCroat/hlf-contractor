@@ -40,7 +40,7 @@ func QueryAll(c router.Context) (interface{}, error) {
 	}
 
 	if !IdentityIsAdmin(certIdentity) {
-		return nil, nil
+		return []Entity{}, nil
 	}
 
 	users, err := c.State().List(TypeName, &Entity{})

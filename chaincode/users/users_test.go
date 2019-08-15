@@ -69,6 +69,15 @@ var _ = Describe("Users", func() {
 			Expect(len(chargeTransactions)).To(Equal(0))
 		})
 
+		It("Empty list result returns to user on get list of all users", func() {
+			queryResp := cc.From(globalActors["user"]).Invoke("QueryAll")
+
+			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
+
+			Expect(chargeTransactions).ToNot(BeNil())
+			Expect(len(chargeTransactions)).To(Equal(0))
+		})
+
 		It("Allow a global admin to get a full user response", func() {
 			resp := cc.From(globalActors["admin"]).Invoke("QueryById", globalMSP, globalUserUsername)
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
@@ -83,11 +92,6 @@ var _ = Describe("Users", func() {
 
 			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
 			Expect(len(chargeTransactions)).To(Equal(1))
-		})
-
-		It("Do not allow user to get list of users", func() {
-			queryResp := cc.From(globalActors["user"]).Invoke("QueryAll")
-			Expect(queryResp.Payload).To(BeNil())
 		})
 
 		It("Allow a global user to get his own full response", func() {
