@@ -9,12 +9,12 @@ import (
 )
 
 type LoginRequest struct {
-	Email    string `email:"-"`
-	Password string `password:"-"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 type LoginResponse struct {
-	Token string `token:"-"`
+	Token string `json:"token,omitempty"`
 }
 
 func (app *App) Login(w http.ResponseWriter, req *http.Request) {
@@ -22,13 +22,19 @@ func (app *App) Login(w http.ResponseWriter, req *http.Request) {
 	raw, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)
+		return
 	}
 	err = json.Unmarshal(raw, data)
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)
+		return
 	}
 
-	err = app.client.Register(data.Email, data.Password)
+	err = app.Client.Login(data.Email, data.Password)
+	if err != nil {
+		shared.WriteErrorResponse(w, 400, err)
+		return
+	}
 
 	sessionToken := uuid.New().String()
 	app.sessions[sessionToken] = data.Email

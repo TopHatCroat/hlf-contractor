@@ -1,2 +1,7 @@
 vendor
 .idea
+
+# Delve and Go stuff
+on
+__debug_bin
+git

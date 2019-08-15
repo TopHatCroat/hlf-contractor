@@ -5,7 +5,7 @@ import (
 )
 
 type App struct {
-	client   *fabric.Client
+	Client   *fabric.Client
 	sessions map[string]string
 }
 
@@ -15,8 +15,15 @@ func NewApp(fabricConfig string) (*App, error) {
 		return nil, err
 	}
 
-	return &App{
-		client:   fabClient,
+	app := &App{
+		Client:   fabClient,
 		sessions: make(map[string]string),
-	}, nil
+	}
+
+	return app, nil
+}
+
+func (app *App) GetSession(token string) string {
+	return "username1@mail.com"
+	return app.sessions[token]
 }

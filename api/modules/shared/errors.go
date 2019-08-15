@@ -6,10 +6,12 @@ import (
 )
 
 type ErrorResponse struct {
-	Message string
+	Message string `json:"message,omitempty"`
+	Status  int    `json:"code,omitempty"`
 }
 
 func WriteErrorResponse(w http.ResponseWriter, code int, err error) {
+	print(err)
 	res, err := json.Marshal(&ErrorResponse{Message: err.Error()})
 	if err != nil {
 		panic(err)

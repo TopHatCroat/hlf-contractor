@@ -403,13 +403,13 @@ certificateAuthorities:
     url: https://ca.awesome.agency:7054
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/ca/ca.awesome.agency-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
         key:
-          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/Admin@awesome.agency/tls/client.key
         cert:
-          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/Admin@awesome.agency/tls/client.crt
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
@@ -417,7 +417,7 @@ certificateAuthorities:
       enrollId: admin
       enrollSecret: adminpw
     # [Optional] The optional name of the CA.
-    caName: ca.awesome.agency
+    caName: ca-awesome-agency
 
   ca.pharmatic.com:
     url: https://ca.pharmatic.com:8054
@@ -433,7 +433,7 @@ certificateAuthorities:
       enrollId: admin
       enrollSecret: adminpw
 
-    caName: ca.pharmatic.com
+    caName: ca-pharmatic
 
 #  ca.magik.org:
 #    url: https://ca.magik.org:8054
@@ -453,7 +453,7 @@ certificateAuthorities:
 #      enrollId: admin
 #      enrollSecret: adminpw
 #    # [Optional] The optional name of the CA.
-#    caName: ca.magik.org
+#    caName: ca-magik
 
   # EntityMatchers enable substitution of network hostnames with static configurations
   # so that properties can be mapped. Regex can be used for this purpose
