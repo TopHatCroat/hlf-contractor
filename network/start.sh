@@ -87,3 +87,7 @@ docker exec \
 #       peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
 #       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
+# Print out the hosts config, this is used for scripts and API running on localhost
+echo "Make sure the following is present in your '/etc/hosts':"
+echo
+docker-compose ps | tail -n +3 | awk '{print "127.0.0.1\t" $1}'

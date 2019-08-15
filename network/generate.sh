@@ -58,7 +58,10 @@ replacePrivateKey
 
 # Client organizations should trust users from the primary organization's CA
 cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/msp/cacerts/ca.awesome.agency-cert.pem
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/peers/peer.pharmatic.com/msp/cacerts/ca.awesome.agency-cert.pem
+
 cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $THIRD_ORG_DIR/msp/cacerts/ca.awesome.agency-cert.pem
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/peers/peer.magik.org/msp/cacerts/ca.awesome.agency-cert.pem
 
 # Generate genesis block for orderer
 configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis \

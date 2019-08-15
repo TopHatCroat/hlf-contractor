@@ -17,6 +17,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-awesome-agency
       - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_DEBUG=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.awesome.agency-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/AWESOME_PRIVATE_KEY
     ports:
@@ -34,6 +35,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-pharmatic
       - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_DEBUG=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.pharmatic.com-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/PHARMATIC_CA_PRIVATE_KEY
     ports:
@@ -58,6 +60,12 @@ services:
       file: base/peer-base.yaml
       service: cli-base
     container_name: api.awesome.agency
+    # A must for delve remote debugging
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "8000:8000"
+      - "8008:8008"
     networks:
       - basic
 

@@ -46,10 +46,12 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      - CRYPTO_CONFIG_FIXTURES_PATH=/etc/hyperledger/fabric/crypto-config
+    working_dir: /opt/gopath/src/github.com/TopHatCroat/hlf-contractor/api
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         - ./../../chaincode/:/opt/gopath/src/github.com/TopHatCroat/hlf-contractor/chaincode
+        - ./../../api/:/opt/gopath/src/github.com/TopHatCroat/hlf-contractor/api
         - ./../crypto-config:/etc/hyperledger/fabric/crypto-config
         - ./../channel-artifacts:/etc/hyperledger/fabric/channel-artifacts
