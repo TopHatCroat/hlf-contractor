@@ -66,7 +66,7 @@ class LoginForm extends React.Component {
         return (
             <form onSubmit={handleSubmit(login)}>
                 <DialogTitle>
-                    {isRegister ? 'Register' : 'Log in'}
+                    {isRegister ? translate('app.auth.register') : translate('app.auth.login')}
                 </DialogTitle>
                 <div className={classes.form}>
                     <div className={classes.input}>
@@ -108,7 +108,7 @@ class LoginForm extends React.Component {
                         className={classes.button}
                         onClick={this.toggleRegister}
                     >
-                        {!isRegister ? 'Register' : 'Log in'}
+                        {!isRegister ? translate('app.auth.register') : translate('app.auth.login')}
                     </Button>
                     <Button
                         variant="outlined"
@@ -124,7 +124,7 @@ class LoginForm extends React.Component {
                                 thickness={2}
                             />
                         )}
-                        {isRegister ? 'Register' : 'Log in'}
+                        {isRegister ? translate('app.auth.register') : translate('app.auth.login')}
                     </Button>
                 </CardActions>
             </form>

@@ -12,8 +12,6 @@ import {
     DELETE_MANY,
 } from 'react-admin';
 
-const apiUrl = "localhost:8080";
-
 /**
  * Maps react-admin queries to a simple REST API
  *
@@ -27,7 +25,7 @@ const apiUrl = "localhost:8080";
  * CREATE       => POST http://my.api.url/posts
  * DELETE       => DELETE http://my.api.url/posts/123
  */
-export default (fabricClient, fabricAuth, httpClient) => {
+export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     /**
      * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
      * @param {String} resource Name of the resource to fetch, e.g. 'posts'
@@ -37,6 +35,15 @@ export default (fabricClient, fabricAuth, httpClient) => {
     const convertDataRequestToHTTP = (type, resource, params) => {
         let url = '';
         const options = {};
+
+        const token = localStorage.getItem('token');
+        if (token !== null && token !== undefined && token !== "") {
+            options.user = {
+                authenticated: true,
+                token,
+            }
+        }
+
         switch (type) {
             case GET_LIST: {
                 const { page, perPage } = params.pagination;
@@ -112,9 +119,10 @@ export default (fabricClient, fabricAuth, httpClient) => {
             case GET_LIST:
             case GET_MANY_REFERENCE:
                 if (!headers.has('content-range')) {
-                    throw new Error(
-                        'The Content-Range header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare Content-Range in the Access-Control-Expose-Headers header?'
-                    );
+                    throw new Error(`The Content-Range header is missing in the HTTP Response. The simple REST data
+                                    provider expects responses for lists of resources to contain this header with the
+                                    total number of results to build the pagination. If you are using CORS, did you
+                                    declare Content-Range in the Access-Control-Expose-Headers header?`);
                 }
                 return {
                     data: json,

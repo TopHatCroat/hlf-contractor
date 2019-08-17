@@ -6,17 +6,19 @@
     "@material-ui/core": "^4.3.2",
     "@material-ui/icons": "^4.2.1",
     "classnames": "^2.2.6",
+    "js-yaml": "latest",
     "prop-types": "^15.7.2",
+    "query-string": "latest",
     "ra-data-json-server": "^2.9.5",
+    "ra-language-english": "latest",
+    "ra-language-french": "^2.9.3",
     "react": "^16.9.0",
     "react-admin": "^2.9.5",
     "react-dom": "^16.9.0",
+    "react-redux": "latest",
     "react-scripts": "3.1.1",
     "recompose": "latest",
-    "react-redux": "latest",
-    "redux-form": "latest",
-    "js-yaml": "latest",
-    "query-string": "latest"
+    "redux-form": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
