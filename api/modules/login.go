@@ -3,7 +3,6 @@ package modules
 import (
 	"encoding/json"
 	"github.com/TopHatCroat/hlf-contractor/api/modules/shared"
-	"github.com/google/uuid"
 	"io/ioutil"
 	"net/http"
 )
@@ -36,9 +35,7 @@ func (app *App) Login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	sessionToken := uuid.New().String()
-	app.sessions[sessionToken] = data.Email
-
+	sessionToken := app.SetSession(data.Email)
 	res := &LoginResponse{
 		Token: sessionToken,
 	}

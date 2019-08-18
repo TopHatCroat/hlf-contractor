@@ -30,7 +30,7 @@ func (app *App) Register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = app.Client.Register(data.Email, data.Password)
+	err = app.Client.Register(data.Email, data.Password, shared.User)
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)
 		return

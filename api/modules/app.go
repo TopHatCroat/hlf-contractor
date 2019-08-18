@@ -2,6 +2,7 @@ package modules
 
 import (
 	"github.com/TopHatCroat/hlf-contractor/api/fabric"
+	"github.com/google/uuid"
 )
 
 type App struct {
@@ -23,7 +24,13 @@ func NewApp(fabricConfig string) (*App, error) {
 	return app, nil
 }
 
+func (app *App) SetSession(username string) string {
+	sessionToken := uuid.New().String()
+	app.sessions[username] = sessionToken
+	return sessionToken
+}
+
 func (app *App) GetSession(token string) string {
-	return "username1@mail.com"
+	//return "username1@mail.com"
 	return app.sessions[token]
 }
