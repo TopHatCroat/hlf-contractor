@@ -144,7 +144,7 @@ var _ = Describe("Charge", func() {
 				ChargeId:   chargeTransactions[0].ChargeId,
 			}
 
-			resp := cc.From(globalActors["user"]).Invoke("InvokeStopTransaction", stopTransaction)
+			resp := cc.From(globalActors["user"]).Invoke("InvokeStopChargeTransaction", stopTransaction)
 			invokeResponse := expectcc.PayloadIs(resp, &charge.Entity{}).(charge.Entity)
 
 			queryResp := cc.From(globalActors["user"]).Invoke("QueryById", contractorName, invokeResponse.ChargeId)
@@ -181,7 +181,7 @@ var _ = Describe("Charge", func() {
 				ChargeId:   chargeTransactions[0].ChargeId,
 			}
 
-			resp := cc.From(globalActors["admin"]).Invoke("InvokeCompleteTransaction", startTransaction)
+			resp := cc.From(globalActors["admin"]).Invoke("InvokeCompleteChargeTransaction", startTransaction)
 			invokeResponse := expectcc.PayloadIs(resp, &charge.Entity{}).(charge.Entity)
 
 			queryResp := cc.From(globalActors["user"]).Invoke("QueryById", contractorName, invokeResponse.ChargeId)

@@ -14,7 +14,7 @@ func CreateChaincode() *router.Chaincode {
 	r.Init(owner.InvokeSetFromCreator)
 
 	// method for debug chaincode state
-	debug.AddHandlers(r, "debug", owner.Only)
+	debug.AddHandlers(r, "debug")
 
 	CreateRouter(r)
 

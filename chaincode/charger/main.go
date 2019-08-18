@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/s7techlab/cckit/extensions/debug"
-	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/router"
 )
 
@@ -14,7 +13,7 @@ func CreateChaincode() *router.Chaincode {
 	r.Init(Init)
 
 	// method for debug chaincode state
-	debug.AddHandlers(r, "debug", owner.Only)
+	debug.AddHandlers(r, "debug")
 
 	CreateRouter(r)
 
