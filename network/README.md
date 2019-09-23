@@ -23,3 +23,6 @@ There are multiple organizations:
 
 * Run ``teardown.sh``.
   * Removes any previous networks
+
+##### To run Hyperledger Explorer
+Ensure you have a cloned Explorer repository in the root directory of the project.

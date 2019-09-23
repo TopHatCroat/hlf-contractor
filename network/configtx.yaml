@@ -62,10 +62,10 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.peer', 'PharmaticMSP.client')"
+                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.peer', 'PharmaticMSP.client', 'AwesomeAgencyMSP.peer', 'AwesomeAgencyMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.client')"
+                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.client', 'AwesomeAgencyMSP.client')"
             Admins:
                 Type: Signature
                 Rule: "OR('PharmaticMSP.admin')"
@@ -84,10 +84,10 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('MagikMSP.admin', 'MagikMSP.peer', 'MagikMSP.client')"
+                Rule: "OR('MagikMSP.admin', 'MagikMSP.peer', 'MagikMSP.client', 'AwesomeAgencyMSP.peer', 'AwesomeAgencyMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('MagikMSP.admin', 'MagikMSP.client')"
+                Rule: "OR('MagikMSP.admin', 'MagikMSP.client', 'AwesomeAgencyMSP.client')"
             Admins:
                 Type: Signature
                 Rule: "OR('MagikMSP.admin')"

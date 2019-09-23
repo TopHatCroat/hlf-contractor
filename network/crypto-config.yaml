@@ -7,6 +7,9 @@ OrdererOrgs:
 PeerOrgs:
   - Name: Awesome Agency
     Domain: awesome.agency
+    # indicates ability to classify identities as either a “client” or a “peer”.
+    # This allows you to create policies such as Org.peer and Org.client in addition to the
+    # existing Org.member and Org.admin
     EnableNodeOUs: true
     Specs:
       - Hostname: anchor

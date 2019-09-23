@@ -14,7 +14,6 @@ function register_and_enroll() {
     fabric-ca-client register --id.name $username --id.secret=password \
                               --home $FABRIC_CA_CLIENT_HOME \
                               --id.attrs role=${role}:ecert \
-                              --id.type user \
                               --url https://ca.awesome.agency:7054
 
     echo "User $username registered"
@@ -68,7 +67,6 @@ docker exec \
         -C $CHANNEL_NAME -n users -l golang -v 0.0.1 -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
-# Instantiate charger code
 docker exec \
       -e "CORE_PEER_ADDRESS=peer.pharmatic.com:7051" \
       -e "CORE_PEER_LOCALMSPID=PharmaticMSP" \
@@ -78,7 +76,33 @@ docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
       api.awesome.agency \
       peer chaincode instantiate -o orderer.foi.org:7050 \
-        -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["2"]}' -P "OR ('PharmaticMSP.peer')" \
+        -C $CHANNEL_NAME -n users -l golang -v 0.0.1 -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer')" \
+        --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
+
+
+# Instantiate charger code
+docker exec \
+      -e "CORE_PEER_ADDRESS=anchor.awesome.agency:7051" \
+      -e "CORE_PEER_LOCALMSPID=AwesomeAgencyMSP" \
+      -e "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/server.crt" \
+      -e "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/server.key" \
+      -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt" \
+      -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
+      api.awesome.agency \
+      peer chaincode instantiate -o orderer.foi.org:7050 \
+        -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
+        --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
+
+docker exec \
+      -e "CORE_PEER_ADDRESS=peer.pharmatic.com:7051" \
+      -e "CORE_PEER_LOCALMSPID=PharmaticMSP" \
+      -e "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.crt" \
+      -e "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.key" \
+      -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt" \
+      -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
+      api.awesome.agency \
+      peer chaincode instantiate -o orderer.foi.org:7050 \
+        -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # docker exec \

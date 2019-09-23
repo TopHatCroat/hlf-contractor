@@ -39,7 +39,7 @@ docker exec \
 #       peer.magik.org \
 #       peer channel join -b /var/hyperledger/fabric/artifacts/default.block
 
-# Install user chaincode on Awseome.agency peer and anchor
+# Install user chaincode on awseome.agency peer and anchor and pharmatic.com peer
 docker exec \
       -e "CORE_PEER_ADDRESS=anchor.awesome.agency:7051" \
       -e "CORE_PEER_LOCALMSPID=AwesomeAgencyMSP" \
@@ -51,7 +51,6 @@ docker exec \
       peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
-# Install user chaincode on Awseome.agency peer and anchor
 # docker exec \
 #       -e "CORE_PEER_ADDRESS=peer.awesome.agency:7051" \
 #       -e "CORE_PEER_LOCALMSPID=AwesomeAgencyMSP" \
@@ -63,7 +62,19 @@ docker exec \
 #       peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
 #       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
-# Install charger chaincode on pharmatic.com
+docker exec \
+      -e "CORE_PEER_ADDRESS=peer.pharmatic.com:7051" \
+      -e "CORE_PEER_LOCALMSPID=PharmaticMSP" \
+      -e "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.crt" \
+      -e "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/server.key" \
+      -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt" \
+      -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
+      api.awesome.agency \
+      peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
+      --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
+
+
+# Install charger chaincode on pharmatic.com peer, magik.org peer and awesome.agency peer
 docker exec \
       -e "CORE_PEER_ADDRESS=peer.pharmatic.com:7051" \
       -e "CORE_PEER_LOCALMSPID=PharmaticMSP" \
@@ -75,7 +86,17 @@ docker exec \
       peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
-# Install charger chaincode on pharmatic.com
+docker exec \
+      -e "CORE_PEER_ADDRESS=anchor.awesome.agency:7051" \
+      -e "CORE_PEER_LOCALMSPID=AwesomeAgencyMSP" \
+      -e "CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/server.crt" \
+      -e "CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/server.key" \
+      -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt" \
+      -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
+      api.awesome.agency \
+      peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
+      --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
+
 # docker exec \
 #       -e "CORE_PEER_ADDRESS=peer.magik.org:7051" \
 #       -e "CORE_PEER_LOCALMSPID=MagikMSP" \

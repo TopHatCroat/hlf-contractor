@@ -50,8 +50,8 @@ func (c *Client) AllCharges(identity *shared.Identity, chargeProvider string) ([
 		return nil, errors.Wrap(err, "failed to get response from charger::QueryAll function")
 	}
 
-	charges := make([]ChargeTransaction, 20)
-	err = json.Unmarshal(res.Payload, charges)
+	charges := make([]ChargeTransaction, 0)
+	err = json.Unmarshal(res.Payload, &charges)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::QueryAll function")
 	}

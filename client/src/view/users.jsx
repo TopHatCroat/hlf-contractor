@@ -1,13 +1,13 @@
 import React from 'react';
-import { List, Datagrid, TextField, EmailField } from 'react-admin';
+import { List, Datagrid, EmailField, TextField } from 'react-admin';
+import MonetaryField from "../components/MonetaryField";
 
 export const UserList = props => (
     <List {...props}>
         <Datagrid rowClick="edit">
-            <TextField source="id" />
             <EmailField source="email" />
             <TextField source="status" />
-            <TextField source="balance" />
+            <MonetaryField source="balance" />
         </Datagrid>
     </List>
 );

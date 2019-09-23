@@ -58,7 +58,7 @@ services:
     environment:
       - CORE_PEER_ID=peer.awesome.agency
       - CORE_PEER_ADDRESS=peer.awesome.agency:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer.awesome.agency:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=anchor.awesome.agency:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=anchor.awesome.agency:7051
       - CORE_PEER_LOCALMSPID=AwesomeAgencyMSP
     volumes:

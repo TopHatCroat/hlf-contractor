@@ -1,0 +1,71 @@
+version: '2.1'
+
+volumes:
+  pgdata:
+  walletstore:
+  grafana-storage:
+  prometheus-storage:
+
+networks:
+  foi.org:
+    external:
+      name: contractor_basic
+
+services:
+
+  explorerdb.foi.org:
+    image: hyperledger/explorer-db:latest
+    container_name: explorerdb.foi.org
+    hostname: explorerdb.foi.org
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+    volumes:
+      - ./../../blockchain-explorer/app/persistence/fabric/postgreSQL/db/createdb.sh:/docker-entrypoint-initdb.d/createdb.sh
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - foi.org
+
+  explorer.foi.org:
+    image: hyperledger/explorer:latest
+    container_name: explorer.foi.org
+    hostname: explorer.foi.org
+    environment:
+      - DATABASE_HOST=explorerdb.foi.org
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWD=password
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ./explorer/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./explorer/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+      - ./crypto-config:/tmp/crypto
+      - walletstore:/opt/wallet
+    command: sh -c "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"
+    ports:
+      - 8090:8080
+    networks:
+      - foi.org
+
+  proms:
+    container_name: proms
+    image: prom/prometheus:latest
+    volumes:
+      - ./explorer/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/prometheus
+    ports:
+      - '9090:9090'
+    networks:
+      - foi.org
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes:
+      - ./explorer/grafana/spec.json:/var/lib/grafana/dashboards/mydashboard.json
+      - ./explorer/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-storage:/var/lib/grafana
+    ports:
+      - '3000:3000'
+    networks:
+      - foi.org
