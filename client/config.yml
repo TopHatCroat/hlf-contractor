@@ -1,0 +1,108 @@
+
+version: "1.0"
+name: "hlf-contractor"
+
+# Any properties with an "x-" prefix will be treated as application-specific, exactly like how naming
+# in HTTP headers or swagger properties work. The SDK will simply ignore these fields and leave
+# them for the applications to process. This is a mechanism for different components of an application
+# to exchange information that are not part of the standard schema described below.
+x-global-api: "http://api.awesome."
+
+channels:
+  default:
+    peers:
+      anchor.awesome.agency:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+#      peer.awesome.agency:
+      peer.pharmatic.com:
+#      peer.magik.org:
+
+organizations:
+  AwesomeAgency:
+    mspid: AwesomeAgencyMSP
+    cryptoPath:  peerOrganizations/org1.example.com/users/{username}@awesome.agency/msp
+    peers:
+      - anchor.awesome.agency
+#      - peer.awesome.agency
+    certificateAuthorities:
+      - ca.awesome.agency
+
+  Pharmatic:
+    mspid: PharmaticMSP
+    cryptoPath:  peerOrganizations/pharmatic.com/users/{username}@pharmatic.com/msp
+    peers:
+      - peer.pharmatic.com
+    certificateAuthorities:
+      - ca.phrmatic.com
+
+#  Magik:
+#    mspid: PharmaticMSP
+#    cryptoPath:  peerOrganizations/magik.org/users/{username}@magik.org/msp
+#    peers:
+#      - peer.magik.org
+#    certificateAuthorities:
+#      - ca.magik.org
+
+  OrdererOrg:
+    mspID: OrdererMSP
+    cryptoPath: ordererOrganizations/foi.org/users/{username}@foi.org/msp
+
+orderers:
+  orderer.foi.org:
+    url: orderer.foi.org:7050
+
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/ordererOrganizations/foi.org/tlsca/tlsca.foi.org-cert.pem
+
+peers:
+  anchor.awesome.agency:
+    url: anchor.awesome.agency:7051
+
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+
+  peer.awesome.agency:
+    url: peer.awesome.agency:7051
+
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/tlsca/tlsca.awesome.agency-cert.pem
+
+  peer.pharmatic.com:
+    url: peer.pharmatic.com:7051
+
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
+
+  peer.magik.org:
+    url: peer.magik.org:7051
+
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/magik.org/tlsca/tlsca.magik.org-cert.pem
+
+certificateAuthorities:
+  ca.awesome.agency:
+    url: https://ca.awesome.agency:7054
+    caName: ca-awesome-agency
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/ca/ca.awesome.agency-cert.pem
+      client:
+        key:
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.key
+        cert:
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/awesome.agency/users/User1@awesome.agency/tls/client.crt    
+
+  ca.pharmatic.com:
+    url: https://ca.pharmatic.com:8054
+    caName: ca-pharmatic
+    tlsCACerts:
+      path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/tlsca/tlsca.pharmatic.com-cert.pem
+      client:
+        key:
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.key
+        cert:
+          path: ${CRYPTO_CONFIG_FIXTURES_PATH}/peerOrganizations/pharmatic.com/users/User1@pharmatic.com/tls/client.crt
+

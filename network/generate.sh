@@ -1,8 +1,10 @@
 #!/bin/sh
 
-export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
-export FABRIC_CFG_PATH=${PWD}
-CHANNEL_NAME=default
+source ./shared.sh
+
+FIRST_ORG_DIR=crypto-config/peerOrganizations/awesome.agency
+SECOND_ORG_DIR=crypto-config/peerOrganizations/pharmatic.com
+THIRD_ORG_DIR=crypto-config/peerOrganizations/magik.org
 
 # remove previous crypto material and config transactions
 rm -fr channel-artifacts/*
@@ -27,17 +29,17 @@ function replacePrivateKey() {
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
   CURRENT_DIR=$PWD
-  cd crypto-config/peerOrganizations/awesome.agency/ca/
+  cd $FIRST_ORG_DIR/ca
   PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
+  cd $CURRENT_DIR
   sed $OPTS "s/AWESOME_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose.yaml
-  cd crypto-config/peerOrganizations/pharmatic.com/ca/
+  cd $SECOND_ORG_DIR/ca
   PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
+  cd $CURRENT_DIR
   sed $OPTS "s/PHARMATIC_CA_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose.yaml
-  cd crypto-config/peerOrganizations/magik.dev/ca/
+  cd $THIRD_ORG_DIR/ca
   PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
+  cd $CURRENT_DIR
   sed $OPTS "s/MAGIK_CA_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose.yaml
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
@@ -54,15 +56,23 @@ fi
 
 replacePrivateKey
 
-# generate genesis block for orderer
-configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+# Client organizations should trust users from the primary organization's CA
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/msp/cacerts/ca.awesome.agency-cert.pem
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/peers/peer.pharmatic.com/msp/cacerts/ca.awesome.agency-cert.pem
+
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $THIRD_ORG_DIR/msp/cacerts/ca.awesome.agency-cert.pem
+cp $FIRST_ORG_DIR/ca/ca.awesome.agency-cert.pem $SECOND_ORG_DIR/peers/peer.magik.org/msp/cacerts/ca.awesome.agency-cert.pem
+
+# Generate genesis block for orderer
+configtxgen -channelID contractor-sys-channel -profile ContractorOrdererGenesis \
+            -outputBlock ./channel-artifacts/genesis.block
 
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate orderer genesis block..."
   exit 1
 fi
 
-# generate channel configuration transaction
+# Generate channel configuration transaction
 configtxgen -profile ContractorChannel -outputCreateChannelTx ./channel-artifacts/channel.tx \
             -channelID $CHANNEL_NAME
 if [ "$?" -ne 0 ]; then
@@ -70,7 +80,7 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
-# generate anchor peer transaction
+# Generate anchor peer transaction
 configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/awesomeMSPanchors.tx \
             -channelID $CHANNEL_NAME -asOrg AwesomeAgencyMSP
 if [ "$?" -ne 0 ]; then
@@ -78,18 +88,18 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
-# generate anchor peer transaction
-#configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./config/magikMSPanchors.tx \
-#            -channelID $CHANNEL_NAME -asOrg MagikMSP
-#if [ "$?" -ne 0 ]; then
-#  echo "Failed to generate anchor peer update for Magik Inc..."
-#  exit 1
-#fi
-
-# generate anchor peer transaction
+# Generate peer transaction
 configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/pharmaticMSPanchors.tx \
             -channelID $CHANNEL_NAME -asOrg PharmaticMSP
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate anchor peer update for Pharmatic AG..."
   exit 1
+fi
+
+# Generate anchor peer transaction
+configtxgen -profile ContractorChannel -outputAnchorPeersUpdate ./channel-artifacts/magikMSPanchors.tx \
+            -channelID $CHANNEL_NAME -asOrg MagikMSP
+if [ "$?" -ne 0 ]; then
+ echo "Failed to generate anchor peer update for Magik Intl..."
+ exit 1
 fi

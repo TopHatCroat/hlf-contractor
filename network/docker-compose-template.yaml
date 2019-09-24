@@ -4,11 +4,12 @@ volumes:
   orderer.foi.org:
   anchor.awesome.agency:
   peer.awesome.agency:
-  anchor.pharmatic.com:
   peer.pharmatic.com:
+  peer.magik.org:
 
 networks:
   basic:
+
 services:
   ca.awesome.agency:
     image: hyperledger/fabric-ca:${IMAGE_TAG}
@@ -16,6 +17,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-awesome-agency
       - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_DEBUG=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.awesome.agency-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/AWESOME_PRIVATE_KEY
     ports:
@@ -33,6 +35,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-pharmatic
       - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_DEBUG=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.pharmatic.com-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/PHARMATIC_CA_PRIVATE_KEY
     ports:
@@ -52,6 +55,20 @@ services:
     networks:
       - basic
 
+  api.awesome.agency:
+    extends:
+      file: base/peer-base.yaml
+      service: cli-base
+    container_name: api.awesome.agency
+    # A must for delve remote debugging
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "8000:8000"
+      - "8008:8008"
+    networks:
+      - basic
+
   anchor.awesome.agency:
     container_name: anchor.awesome.agency
     extends:
@@ -60,21 +77,13 @@ services:
     networks:
       - basic
 
-  peer.awesome.agency:
-    container_name: peer.awesome.agency
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: peer.awesome.agency
-    networks:
-      - basic
-
-  anchor.pharmatic.com:
-    container_name: anchor.pharmatic.com
-    extends:
-      file:  base/docker-compose-base.yaml
-      service: anchor.pharmatic.com
-    networks:
-      - basic
+  # peer.awesome.agency:
+  #   container_name: peer.awesome.agency
+  #   extends:
+  #     file:  base/docker-compose-base.yaml
+  #     service: peer.awesome.agency
+  #   networks:
+  #     - basic
 
   peer.pharmatic.com:
     container_name: peer.pharmatic.com
@@ -83,3 +92,11 @@ services:
       service: peer.pharmatic.com
     networks:
       - basic
+
+  # peer.magik.org:
+  #   container_name: peer.magik.org
+  #   extends:
+  #     file:  base/docker-compose-base.yaml
+  #     service: peer.magik.org
+  #   networks:
+  #     - basic

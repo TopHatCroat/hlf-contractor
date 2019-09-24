@@ -1,0 +1,98 @@
+{
+  "name": "charger-network",
+  "version": "1.0",
+  "client": {
+    "tlsEnable": true,
+    "adminUser": "admin",
+    "adminPassword": "adminpw",
+    "enableAuthentication": false,
+    "organization": "AwesomeAgencyMSP",
+    "channel": "default",
+    "credentialStore": {
+      "path": "./tmp/credentialStore_Org1/credential",
+      "cryptoStore": {
+        "path": "./tmp/credentialStore_Org1/crypto"
+      }
+    }
+  },
+  "channels": {
+    "default": {
+      "peers": {
+        "anchor.awesome.agency": {},
+        "peer.pharmatic.com": {}
+      },
+      "connection": {
+        "timeout": {
+          "peer": {
+            "endorser": "6000",
+            "eventHub": "6000",
+            "eventReg": "6000"
+          }
+        }
+      }
+    }
+  },
+  "organizations": {
+    "AwesomeAgancyMSP": {
+      "mspid": "AwesomeAgencyMSP",
+      "fullpath": true,
+      "adminPrivateKey": {
+        "path":
+          "/tmp/crypto/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp/keystore/034e13077d2aba5ab71b9b351b661419da0496023a0da2478223287ebaaa61ea_sk"
+      },
+      "signedCert": {
+        "path":
+          "/tmp/crypto/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp/signcerts/Admin@awesome.agency-cert.pem"
+      }
+    },
+    "PharmaticMSP": {
+      "mspid": "PharmaticMSP",
+      "fullpath": true,
+      "adminPrivateKey": {
+        "path":
+          "/tmp/crypto/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp/keystore/53ea76d4fc61144d5d04572ee1ba8ac9800cbd8e8fbdb69cace450c083a442f1_sk"
+      },
+      "signedCert": {
+        "path":
+          "/tmp/crypto/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp/signcerts/Admin@pharmatic.com-cert.pem"
+      }
+    },
+    "OrdererMSP": {
+      "mspid": "OrdererMSP",
+      "fullpath": true,
+      "adminPrivateKey": {
+        "path":
+          "/tmp/crypto/ordererOrganizations/foi.org/users/Admin@foi.org/msp/keystore/3ac75461f1a9557c79a53f4625c4d3ea34e90163cf31e1b3a93ebc5ee38c92b2_sk"
+      }
+    }
+  },
+  "peers": {
+    "anchor.awesome.agency": {
+      "tlsCACerts": {
+        "path":
+          "/tmp/crypto/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt"
+      },
+      "url": "grpcs://anchor.awesome.agency:7051",
+      "eventUrl": "grpcs://anchor.awesome.agency:7053",
+      "grpcOptions": {
+        "ssl-target-name-override": "anchor.awesome.agency"
+      }
+    },
+    "peer.pharmatic.com": {
+      "tlsCACerts": {
+        "path":
+          "/tmp/crypto/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt"
+      },
+      "url": "grpcs://peer.pharmatic.com:7051",
+      "eventUrl": "grpcs://peer.pharmatic.com:7053",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer.pharmatic.com"
+      }
+    }
+  },
+  "orderers": {
+    "orderer.foi.org": {
+      "url": "grpcs://orderer.foi.org:7050"
+    }
+  }
+}

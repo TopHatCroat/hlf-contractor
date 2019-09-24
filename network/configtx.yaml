@@ -1,12 +1,4 @@
 ---
-################################################################################
-#
-#   Section: Organizations
-#
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
-#
-################################################################################
 Organizations:
     - &OrdererOrg
         Name: OrdererOrg
@@ -70,16 +62,38 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.peer', 'PharmaticMSP.client')"
+                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.peer', 'PharmaticMSP.client', 'AwesomeAgencyMSP.peer', 'AwesomeAgencyMSP.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.client')"
+                Rule: "OR('PharmaticMSP.admin', 'PharmaticMSP.client', 'AwesomeAgencyMSP.client')"
             Admins:
                 Type: Signature
                 Rule: "OR('PharmaticMSP.admin')"
 
         AnchorPeers:
-            - Host: anchor.pharmatic.com
+            - Host: peer.pharmatic.com
+              Port: 7051
+
+    - &Magik
+        Name: MagikMSP
+
+        ID: MagikMSP
+
+        MSPDir: crypto-config/peerOrganizations/magik.org/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('MagikMSP.admin', 'MagikMSP.peer', 'MagikMSP.client', 'AwesomeAgencyMSP.peer', 'AwesomeAgencyMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('MagikMSP.admin', 'MagikMSP.client', 'AwesomeAgencyMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('MagikMSP.admin')"
+
+        AnchorPeers:
+            - Host: peer.magik.org
               Port: 7051
 
 ################################################################################
@@ -290,6 +304,7 @@ Profiles:
                 Organizations:
                     - *AwesomeAgency
                     - *Pharmatic
+                    - *Magik
     ContractorChannel:
         Consortium: SampleConsortium
         Application:
@@ -297,5 +312,6 @@ Profiles:
             Organizations:
                 - *AwesomeAgency
                 - *Pharmatic
+                - *Magik
             Capabilities:
                 <<: *ApplicationCapabilities

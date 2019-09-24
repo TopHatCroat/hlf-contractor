@@ -7,23 +7,28 @@ OrdererOrgs:
 PeerOrgs:
   - Name: Awesome Agency
     Domain: awesome.agency
+    # indicates ability to classify identities as either a “client” or a “peer”.
+    # This allows you to create policies such as Org.peer and Org.client in addition to the
+    # existing Org.member and Org.admin
+    EnableNodeOUs: true
     Specs:
       - Hostname: anchor
       - Hostname: peer
     Users:
-      Count: 2
+      Count: 1
 
   - Name: Pharmatic AG
     Domain: pharmatic.com
+    EnableNodeOUs: true
     Specs:
-      - Hostname: anchor
       - Hostname: peer
     Users:
-      Count: 2
+      Count: 1
 
-  - Name: Magik Inc.
-    Domain: magik.dev
+  - Name: Magik Intl.
+    Domain: magik.org
+    EnableNodeOUs: true
     Specs:
-      - Hostname: anchor
+      - Hostname: peer
     Users:
       Count: 1
