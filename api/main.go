@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	DEFAULT_CA_ULR = "localhost:7054"
+	DEFAULT_CA_URL = "ca.awesome.agency:7054"
 )
 
 func main() {

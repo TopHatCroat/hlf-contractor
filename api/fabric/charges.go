@@ -50,7 +50,7 @@ func (c *Client) AllCharges(identity *shared.Identity, chargeProvider string) ([
 		return nil, errors.Wrap(err, "failed to get response from charger::QueryAll function")
 	}
 
-	charges := make([]ChargeTransaction, 0)
+	var charges []ChargeTransaction
 	err = json.Unmarshal(res.Payload, &charges)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::QueryAll function")
@@ -78,13 +78,13 @@ func (c *Client) FindChargeById(identity *shared.Identity, chargeProvider, charg
 		return nil, errors.Wrap(err, "failed to get response from charger::QueryById function")
 	}
 
-	chargeTransaction := &ChargeTransaction{}
-	err = json.Unmarshal(res.Payload, chargeTransaction)
+	var chargeTransaction ChargeTransaction
+	err = json.Unmarshal(res.Payload, &chargeTransaction)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::QueryById function")
 	}
 
-	return chargeTransaction, nil
+	return &chargeTransaction, nil
 }
 
 func (c *Client) StartCharge(identity *shared.Identity, chargeProvider string) (*ChargeTransaction, error) {
@@ -102,7 +102,7 @@ func (c *Client) StartCharge(identity *shared.Identity, chargeProvider string) (
 	}
 
 	args := [][]byte{startChargeBytes}
-	res, err := channelClient.Query(channel.Request{
+	res, err := channelClient.Execute(channel.Request{
 		ChaincodeID: "charger",
 		Fcn:         "InvokeStartChargeTransaction",
 		Args:        args,
@@ -111,13 +111,13 @@ func (c *Client) StartCharge(identity *shared.Identity, chargeProvider string) (
 		return nil, errors.Wrap(err, "failed to get response from charger::InvokeStartChargeTransaction function")
 	}
 
-	chargeTransaction := &ChargeTransaction{}
-	err = json.Unmarshal(res.Payload, chargeTransaction)
+	var chargeTransaction ChargeTransaction
+	err = json.Unmarshal(res.Payload, &chargeTransaction)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeStartChargeTransaction function")
 	}
 
-	return chargeTransaction, nil
+	return &chargeTransaction, nil
 }
 
 func (c *Client) StopCharge(identity *shared.Identity, chargeProvider, chargeId string) (*ChargeTransaction, error) {
@@ -135,7 +135,7 @@ func (c *Client) StopCharge(identity *shared.Identity, chargeProvider, chargeId 
 	}
 
 	args := [][]byte{stopChargeBytes}
-	res, err := channelClient.Query(channel.Request{
+	res, err := channelClient.Execute(channel.Request{
 		ChaincodeID: "charger",
 		Fcn:         "InvokeStopChargeTransaction",
 		Args:        args,
@@ -144,13 +144,13 @@ func (c *Client) StopCharge(identity *shared.Identity, chargeProvider, chargeId 
 		return nil, errors.Wrap(err, "failed to get response from charger::InvokeStopChargeTransaction function")
 	}
 
-	chargeTransaction := &ChargeTransaction{}
-	err = json.Unmarshal(res.Payload, chargeTransaction)
+	var chargeTransaction ChargeTransaction
+	err = json.Unmarshal(res.Payload, &chargeTransaction)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeStopChargeTransaction function")
 	}
 
-	return chargeTransaction, nil
+	return &chargeTransaction, nil
 }
 
 func (c *Client) CompleteCharge(identity *shared.Identity, chargeProvider, chargeId string) (*ChargeTransaction, error) {
@@ -168,7 +168,7 @@ func (c *Client) CompleteCharge(identity *shared.Identity, chargeProvider, charg
 	}
 
 	args := [][]byte{completeChargeBytes}
-	res, err := channelClient.Query(channel.Request{
+	res, err := channelClient.Execute(channel.Request{
 		ChaincodeID: "charger",
 		Fcn:         "InvokeCompleteChargeTransaction",
 		Args:        args,
@@ -177,11 +177,11 @@ func (c *Client) CompleteCharge(identity *shared.Identity, chargeProvider, charg
 		return nil, errors.Wrap(err, "failed to get response from charger::InvokeCompleteChargeTransaction function")
 	}
 
-	chargeTransaction := &ChargeTransaction{}
-	err = json.Unmarshal(res.Payload, chargeTransaction)
+	var chargeTransaction ChargeTransaction
+	err = json.Unmarshal(res.Payload, &chargeTransaction)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeCompleteChargeTransaction function")
 	}
 
-	return chargeTransaction, nil
+	return &chargeTransaction, nil
 }

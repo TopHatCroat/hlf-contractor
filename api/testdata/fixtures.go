@@ -42,10 +42,20 @@ func expectUserIdentity(app *modules.App, username, password string, role shared
 }
 
 func InitFixtures(app *modules.App) {
-	firstUserIdentity := expectUserIdentity(app, firstUser, userPassword, shared.User)
+	firstUserIdentity := expectUserIdentity(app, admin, userPassword, shared.Admin)
+
+	existingCharges, err := app.Client.AllCharges(&firstUserIdentity, chargeProvider)
+	if err != nil {
+		panic(err)
+	}
+
+	if (len(existingCharges) != 0) {
+		fmt.Printf("Data already exists. Skipping fixtures...")
+		return
+	}
 
 	// Wait for identity to propagate
-	time.Sleep(10 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	chargeTransactions := make([]*fabric.ChargeTransaction, 5)
 	for i := 0; i < 5; i++ {

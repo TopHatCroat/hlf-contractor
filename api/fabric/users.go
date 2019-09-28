@@ -40,6 +40,7 @@ func (c *Client) Login(username, password string) error {
 	err := c.CA.Enroll(req)
 	return err
 }
+
 func (c *Client) AllUsers(identity *shared.Identity) ([]User, error) {
 	channelName := "default"
 
@@ -57,13 +58,13 @@ func (c *Client) AllUsers(identity *shared.Identity) ([]User, error) {
 		return nil, errors.Wrap(err, "failed to get response from users::QueryAll function")
 	}
 
-	user := make([]User, 20)
-	err = json.Unmarshal(res.Payload, user)
+	var users []User
+	err = json.Unmarshal(res.Payload, &users)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal response from users::QueryById function")
+		return nil, errors.Wrap(err, "failed to unmarshal response from users::QueryAll function")
 	}
 
-	return user, nil
+	return users, nil
 }
 
 func (c *Client) FindUserById(identity *shared.Identity, userName string) (*User, error) {
@@ -85,11 +86,11 @@ func (c *Client) FindUserById(identity *shared.Identity, userName string) (*User
 		return nil, errors.Wrap(err, "failed to get response from users::QueryById function")
 	}
 
-	user := &User{}
-	err = json.Unmarshal(res.Payload, user)
+	var user User
+	err = json.Unmarshal(res.Payload, &user)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from users::QueryById function")
 	}
 
-	return user, nil
+	return &user, nil
 }
