@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/TopHatCroat/hlf-contractor/chaincode/charger/charge"
 	"github.com/TopHatCroat/hlf-contractor/chaincode/charger/price"
+	"github.com/TopHatCroat/hlf-contractor/chaincode/charger/service"
 	"github.com/pkg/errors"
 	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/identity"
@@ -73,17 +74,21 @@ func InvokeStartChargeTransaction(c router.Context) (res interface{}, err error)
 		return nil, fmt.Errorf("missing identity email for this user")
 	}
 
-	// TODO: check if user can start transaction (has outstanding balance? already ongoing transaction?)
+	userState, err := service.GetUser(c.Stub(), user.GetMSPID(), GetCertificateSubject(user.Cert))
+	if err != nil || userState == nil {
+		return nil, errors.Wrap(err, "could not get user state")
+	}
+
+	if userState.State == "blocked" {
+		return nil, errors.Errorf("User %s:%s is blocked", user.GetMSPID(), GetCertificateSubject(user.Cert))
+	}
+
 	var chargeTransaction = &charge.Entity{
 		Contractor: startTransaction.Contractor,
 		ChargeId:   strconv.Itoa(rand.Int()),
-		User:       SerializeIdentity(user.MspID, user.Cert),
+		User:        SerializeIdentity(user.MspID, user.Cert),
 		StartTime:  time.Now(),
-		State:      charge.ChargeStateStarted, // Initial state
-	}
-
-	if err := c.Event().Set(charge.ChargeStartedEvent, chargeTransaction); err != nil {
-		return nil, err
+		State:       charge.ChargeStateStarted, // Initial state
 	}
 
 	return chargeTransaction, c.State().Insert(chargeTransaction)

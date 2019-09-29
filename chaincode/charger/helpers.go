@@ -5,5 +5,9 @@ import (
 )
 
 func SerializeIdentity(mspId string, certificate *x509.Certificate) string {
-	return mspId + ":" + certificate.Subject.CommonName
+	return mspId + ":" + GetCertificateSubject(certificate)
+}
+
+func GetCertificateSubject(certificate *x509.Certificate) string {
+	return certificate.Subject.CommonName
 }

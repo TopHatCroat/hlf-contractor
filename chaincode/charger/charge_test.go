@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bou.ke/monkey"
 	"github.com/TopHatCroat/hlf-contractor/chaincode/charger/charge"
+	"github.com/TopHatCroat/hlf-contractor/chaincode/charger/service"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/s7techlab/cckit/extensions/debug"
 	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/router"
@@ -98,8 +101,26 @@ var _ = Describe("Charge", func() {
 			Expect(resp.Message).To(ContainSubstring("doesNotExists"))
 		})
 
+		It("Do not allow a global user to start charge transaction if blocked", func() {
+			fakeChargeStartTime.Do()
+			guard := mockGetUser("blocked")
+
+			startTransaction := &charge.StartTransaction{
+				Contractor: contractorName,
+			}
+
+			resp := cc.From(globalActors["user"]).Invoke("InvokeStartChargeTransaction", startTransaction)
+
+			Expect(resp.Status).To(BeNumerically("==", 500))
+			Expect(resp.Message).To(ContainSubstring("is blocked"))
+
+			fakeChargeStartTime.Undo()
+			guard.Unpatch()
+		})
+
 		It("Allow a global user to start charge transaction", func() {
 			fakeChargeStartTime.Do()
+			guard := mockGetUser("active")
 
 			startTransaction := &charge.StartTransaction{
 				Contractor: contractorName,
@@ -120,6 +141,7 @@ var _ = Describe("Charge", func() {
 			Expect(createdTransaction.StartTime.Second()).To(Equal(chargeStartTime.Second()))
 			Expect(createdTransaction.EndTime.Second()).To(BeZero())
 			fakeChargeStartTime.Undo()
+			guard.Unpatch()
 		})
 
 		It("Allow a global user get a list of its charge transactions", func() {
@@ -197,3 +219,14 @@ var _ = Describe("Charge", func() {
 		})
 	})
 })
+
+func mockGetUser(state string) *monkey.PatchGuard {
+	return monkey.Patch(service.GetUser, func(shim.ChaincodeStubInterface, string, string) (*service.User, error) {
+		return &service.User{
+			MSP:     globalMSP,
+			Email:   "notimportant@mail.com",
+			State:   state,
+			Balance: 0,
+		}, nil
+	})
+}
