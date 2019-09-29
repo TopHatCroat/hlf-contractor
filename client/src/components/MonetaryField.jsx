@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TextField from "@material-ui/core/TextField";
 
 const MonetaryField = ({ source, record = {} }) => {
+    if(record[source] === undefined || record[source] === null) {
+        return <div>TBA</div>
+    }
+
     const amount = new Intl.NumberFormat().format(record[source] / 100);
-    return (<TextField>{`${amount} €}`}</TextField>)
+    return <div>{`${amount} €}`}</div>
 };
 
 MonetaryField.propTypes = {

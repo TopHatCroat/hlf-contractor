@@ -36,12 +36,13 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         let url = '';
         const options = {};
 
+        if (!options.headers) {
+            options.headers = new Headers({ Accept: 'application/json' });
+        }
+
         const token = localStorage.getItem('token');
         if (token !== null && token !== undefined && token !== "") {
-            options.user = {
-                authenticated: true,
-                token,
-            }
+            options.headers.set('Authorization', token);
         }
 
         switch (type) {
@@ -118,21 +119,23 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
         switch (type) {
             case GET_LIST:
             case GET_MANY_REFERENCE:
-                if (!headers.has('content-range')) {
-                    throw new Error(`The Content-Range header is missing in the HTTP Response. The simple REST data
-                                    provider expects responses for lists of resources to contain this header with the
-                                    total number of results to build the pagination. If you are using CORS, did you
-                                    declare Content-Range in the Access-Control-Expose-Headers header?`);
-                }
-                return {
-                    data: json,
-                    total: parseInt(
+                var totalItems = 10;
+                if (headers.has('content-range')) {
+                    // throw new Error(`The Content-Range header is missing in the HTTP Response. The simple REST data
+                    //                 provider expects responses for lists of resources to contain this header with the
+                    //                 total number of results to build the pagination. If you are using CORS, did you
+                    //                 declare Content-Range in the Access-Control-Expose-Headers header?`);
+                    totalItems = parseInt(
                         headers
                             .get('content-range')
                             .split('/')
                             .pop(),
                         10
-                    ),
+                    )
+                }
+                return {
+                    data: json,
+                    total: totalItems,
                 };
             case CREATE:
                 return { data: { ...params.data, id: json.id } };

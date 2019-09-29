@@ -36,7 +36,7 @@ export default (apiUrl, fabricCli) => {
             })
     };
 
-    return (type, params) => {
+    return async (type, params) => {
         if (type === AUTH_LOGIN) {
             const { kind, username, password } = params;
             if (kind === "register") {
@@ -46,8 +46,7 @@ export default (apiUrl, fabricCli) => {
                     })
             }
 
-
-            login(username, password)
+            await login(username, password)
                 .catch((error) => {
                     showNotification(error.message, 'error');
                 });
@@ -57,7 +56,7 @@ export default (apiUrl, fabricCli) => {
         } else if (type === AUTH_CHECK) {
             return localStorage.getItem('token') ? Promise.resolve() : Promise.reject();
         }
-        
+
         return Promise.resolve();
     }
 }

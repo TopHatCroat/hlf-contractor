@@ -15,10 +15,10 @@
     "react": "^16.9.0",
     "react-admin": "^2.9.5",
     "react-dom": "^16.9.0",
-    "react-redux": "latest",
+    "react-redux": "5.0.7",
     "react-scripts": "3.1.1",
-    "recompose": "latest",
-    "redux-form": "latest"
+    "recompose": "0.26.0",
+    "redux-form": "7.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
