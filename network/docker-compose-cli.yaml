@@ -1,0 +1,21 @@
+version: '2'
+
+networks:
+  basic:
+    external:
+      name: contractor_basic
+
+services:
+  api.awesome.agency:
+    extends:
+      file: base/peer-base.yaml
+      service: cli-base
+    container_name: api.awesome.agency
+    # A must for delve remote debugging
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "8000:8000"
+      - "8008:8008"
+    networks:
+      - basic
