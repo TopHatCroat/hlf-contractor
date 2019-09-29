@@ -78,8 +78,25 @@ var _ = Describe("Users", func() {
 			Expect(len(chargeTransactions)).To(Equal(0))
 		})
 
+		It("Allow a global admin to create a user", func() {
+			resp := cc.From(globalActors["admin"]).Invoke("InvokeCreateUser", globalMSP, globalUserUsername)
+			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
+
+			Expect(queryResp.Email).To(Equal(globalUserUsername))
+			Expect(queryResp.State).To(Equal(UserStateActive))
+			Expect(queryResp.Balance).To(BeNumerically("==", 0))
+		})
+
+		It("Do not allow create a user with same email", func() {
+			resp := cc.From(globalActors["admin"]).Invoke("InvokeCreateUser", globalMSP, globalUserUsername)
+
+			Expect(resp.Status).To(BeNumerically("==", 500))
+			Expect(resp.Message).To(ContainSubstring("state key already exists"))
+		})
+
 		It("Allow a global admin to get a full user response", func() {
 			resp := cc.From(globalActors["admin"]).Invoke("QueryById", globalMSP, globalUserUsername)
+
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
 
 			Expect(queryResp.Email).To(Equal(globalUserUsername))

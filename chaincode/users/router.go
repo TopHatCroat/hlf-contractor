@@ -9,6 +9,7 @@ func CreateRouter(router *router.Group) {
 	router.
 		Query("QueryById", QueryById, param.String("mspId"), param.String("email")).
 		Query("QueryAll", QueryAll).
+		Invoke("InvokeCreateUser", InvokeCreateUser, param.String("mspId"), param.String("email")).
 		Invoke("InvokeBlockUserTransaction", InvokeBlockUserTransaction, param.String("mspId"), param.String("email")).
 		Invoke("InvokeUnblockUserTransaction", InvokeUnblockUserTransaction, param.String("mspId"), param.String("email"))
 }

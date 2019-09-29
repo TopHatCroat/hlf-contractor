@@ -8,29 +8,18 @@ import (
 	"reflect"
 )
 
-func getOrCreateUser(ctx router.Context, mspId, username string) (*Entity, error) {
+func getUser(ctx router.Context, mspId, username string) (*Entity, error) {
 	result, err := ctx.State().Get(&Entity{
 		MSP:   mspId,
 		Email: username,
 	}, &Entity{})
 
-	// If user not found, create it
-	if result == nil {
-		user := &Entity{
-			MSP:     mspId,
-			Email:   username,
-			State:   UserStateActive,
-			Balance: 0,
-		}
-		if err = ctx.State().Insert(user); err != nil {
-			return nil, errors.Wrap(err, "Could not create user")
-		}
-
-		return user, nil
-	} else {
-		user := result.(Entity)
-		return &user, nil
+	if err != nil {
+		return nil, err
 	}
+
+	user := result.(Entity)
+	return &user, nil
 }
 
 func QueryAll(c router.Context) (interface{}, error) {
@@ -66,7 +55,7 @@ func QueryById(c router.Context) (interface{}, error) {
 		return nil, errors.New("Email must be specified")
 	}
 
-	user, err := getOrCreateUser(c, mspId.(string), username.(string))
+	user, err := getUser(c, mspId.(string), username.(string))
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +74,40 @@ func QueryById(c router.Context) (interface{}, error) {
 		Email: user.Email,
 		State: user.State,
 	}, nil
+}
+
+func InvokeCreateUser(c router.Context) (interface{}, error) {
+	certIdentity, err := identity.FromStub(c.Stub())
+	if err != nil {
+		return nil, err
+	}
+
+	if !IdentityIsAdmin(certIdentity) {
+		return nil, nil
+	}
+
+	mspId := c.Param("mspId")
+	username := c.Param("email")
+	if mspId == nil || mspId == "" {
+		return nil, errors.New("MSP must be specified")
+	}
+
+	if username == nil || username == "" {
+		return nil, errors.New("Email must be specified")
+	}
+
+	user := &Entity{
+		MSP:     mspId.(string),
+		Email:   username.(string),
+		State:   UserStateActive,
+		Balance: 0,
+	}
+
+	if err = c.State().Insert(user); err != nil {
+		return nil, errors.Wrap(err, "Could not create user")
+	}
+
+	return user, nil
 }
 
 func InvokeBlockUserTransaction(c router.Context) (interface{}, error) {
@@ -107,7 +130,7 @@ func InvokeBlockUserTransaction(c router.Context) (interface{}, error) {
 		return nil, errors.New("Email must be specified")
 	}
 
-	user, err := getOrCreateUser(c, mspId.(string), username.(string))
+	user, err := getUser(c, mspId.(string), username.(string))
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +164,7 @@ func InvokeUnblockUserTransaction(c router.Context) (interface{}, error) {
 		return nil, errors.New("Email must be specified")
 	}
 
-	user, err := getOrCreateUser(c, mspId.(string), username.(string))
+	user, err := getUser(c, mspId.(string), username.(string))
 	if err != nil {
 		return nil, err
 	}

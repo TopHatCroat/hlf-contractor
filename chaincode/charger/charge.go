@@ -82,6 +82,10 @@ func InvokeStartChargeTransaction(c router.Context) (res interface{}, err error)
 		State:      charge.ChargeStateStarted, // Initial state
 	}
 
+	if err := c.Event().Set(charge.ChargeStartedEvent, chargeTransaction); err != nil {
+		return nil, err
+	}
+
 	return chargeTransaction, c.State().Insert(chargeTransaction)
 }
 
