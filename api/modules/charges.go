@@ -4,6 +4,8 @@ import (
 	"github.com/TopHatCroat/hlf-contractor/api/modules/shared"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func (app *App) GetCharges(w http.ResponseWriter, req *http.Request) {
@@ -19,6 +21,7 @@ func (app *App) GetCharges(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Range", strconv.Itoa(len(users)))
 	shared.WriteResponse(w, 200, users)
 }
 
@@ -47,7 +50,9 @@ func (app *App) GetChargeById(w http.ResponseWriter, req *http.Request) {
 	}
 
 	pathVars := mux.Vars(req)
-	chargeTransaction, err := app.Client.FindChargeById(identity, pathVars["provider"], pathVars["id"])
+	parts := strings.Split(pathVars["id"], ":")
+
+	chargeTransaction, err := app.Client.FindChargeById(identity, parts[0], parts[1])
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)
 		return
@@ -68,7 +73,7 @@ func (app *App) StartCharge(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	provider := req.FormValue("provider")
+	provider := req.FormValue("contractor")
 	users, err := app.Client.StartCharge(identity, provider)
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)
@@ -90,7 +95,7 @@ func (app *App) StopCharge(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	provider := req.FormValue("provider")
+	provider := req.FormValue("contractor")
 	chargeId := req.FormValue("chargeId")
 	users, err := app.Client.StopCharge(identity, provider, chargeId)
 	if err != nil {
@@ -113,7 +118,7 @@ func (app *App) CompleteCharge(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	provider := req.FormValue("provider")
+	provider := req.FormValue("contractor")
 	chargeId := req.FormValue("chargeId")
 	users, err := app.Client.CompleteCharge(identity, provider, chargeId)
 	if err != nil {

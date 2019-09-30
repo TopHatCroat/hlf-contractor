@@ -23,6 +23,7 @@ func (app *App) Login(w http.ResponseWriter, req *http.Request) {
 		shared.WriteErrorResponse(w, 400, err)
 		return
 	}
+
 	err = json.Unmarshal(raw, data)
 	if err != nil {
 		shared.WriteErrorResponse(w, 400, err)

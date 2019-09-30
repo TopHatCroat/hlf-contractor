@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DateField } from 'react-admin';
 
 const UserField = ({ source, record = {} }) => {
     const data = record[source].split(":");
     return <>
-        <DateField re source={source} options={{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }} />
-        <DateField style={{fontWeight: 600}}>{data[1]}</DateField>
+        <div>{data[0]}</div>
+        <div style={{fontWeight: 600}}>{data[1]}</div>
     </>;
 };
 

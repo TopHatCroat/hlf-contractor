@@ -9,10 +9,12 @@ import (
 )
 
 const (
-	admin         = "admin@mail.com"
+	userMsp = "AwesomeAgencyMSP"
+
+	admin          = "admin@mail.com"
 	adminPassword = "asdf"
 
-	firstUser    = "user@mail.com"
+	firstUser     = "user@mail.com"
 	userPassword = "asdf"
 
 	chargeProvider = "Pharmatic"
@@ -24,6 +26,7 @@ func expectUserIdentity(app *modules.App, username, password string, role shared
 	if err != nil {
 		println(err)
 	}
+
 	err = app.Client.Login(username, password)
 	if err != nil {
 		panic(err)
@@ -42,9 +45,10 @@ func expectUserIdentity(app *modules.App, username, password string, role shared
 }
 
 func InitFixtures(app *modules.App) {
-	firstUserIdentity := expectUserIdentity(app, admin, userPassword, shared.Admin)
+	adminUserIdentity := expectUserIdentity(app, admin, userPassword, shared.Admin)
+	_ = expectUserIdentity(app, firstUser, userPassword, shared.User)
 
-	existingCharges, err := app.Client.AllCharges(&firstUserIdentity, chargeProvider)
+	existingCharges, err := app.Client.AllCharges(&adminUserIdentity, chargeProvider)
 	if err != nil {
 		panic(err)
 	}
@@ -54,12 +58,26 @@ func InitFixtures(app *modules.App) {
 		return
 	}
 
+	adminEntity, err := app.Client.CreateUser(&adminUserIdentity, userMsp, admin)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Created user: %+v\n", adminEntity)
+
+	regularEntity, err := app.Client.CreateUser(&adminUserIdentity, userMsp, firstUser)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Created user: %+v\n", regularEntity)
+
 	// Wait for identity to propagate
 	time.Sleep(2 * time.Second)
 
 	chargeTransactions := make([]*fabric.ChargeTransaction, 5)
-	for i := 0; i < 5; i++ {
-		chargeTransaction, err := app.Client.StartCharge(&firstUserIdentity, chargeProvider)
+	for i := 0; i < 1; i++ {
+		chargeTransaction, err := app.Client.StartCharge(&adminUserIdentity, chargeProvider)
 		if err != nil {
 			panic(err)
 		}
@@ -67,15 +85,15 @@ func InitFixtures(app *modules.App) {
 		chargeTransactions[i] = chargeTransaction
 	}
 
-	createdChargeTransaction, err := app.Client.AllCharges(&firstUserIdentity, chargeProvider)
+	createdChargeTransaction, err := app.Client.AllCharges(&adminUserIdentity, chargeProvider)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("Created transaction count: %d", len(createdChargeTransaction))
 
-	for i := 0; i < 4; i++ {
-		chargeTransaction, err := app.Client.StopCharge(&firstUserIdentity, chargeProvider, chargeTransactions[i].ChargeId)
+	for i := 0; i < 1; i++ {
+		chargeTransaction, err := app.Client.StopCharge(&adminUserIdentity, chargeProvider, chargeTransactions[i].ChargeId)
 		if err != nil {
 			panic(err)
 		}
@@ -84,7 +102,7 @@ func InitFixtures(app *modules.App) {
 
 	adminIdentity := expectUserIdentity(app, firstUser, userPassword, shared.Admin)
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		chargeTransaction, err := app.Client.CompleteCharge(&adminIdentity, chargeProvider, chargeTransactions[i].ChargeId)
 		if err != nil {
 			panic(err)

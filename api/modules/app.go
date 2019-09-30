@@ -26,7 +26,7 @@ func NewApp(fabricConfig string) (*App, error) {
 
 func (app *App) SetSession(username string) string {
 	sessionToken := uuid.New().String()
-	app.sessions[username] = sessionToken
+	app.sessions[sessionToken] = username
 	return sessionToken
 }
 

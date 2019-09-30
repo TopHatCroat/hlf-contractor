@@ -6,7 +6,11 @@ import fabricAuthProvider from './data/auth';
 import FabricClient from './fabric/client';
 import Login from './login/Login'
 import { UserList } from './view/users';
-import { ChargeTransactionList } from './view/charges';
+import {
+    ChargeTransactionCreate,
+    ChargeTransactionList,
+    ChargeTransactionEdit,
+} from './view/charges';
 
 const fabricConfig = {};
 // const fabricConfig = fs.readFileSync('../config.yaml', 'utf8');
@@ -23,7 +27,12 @@ const App = () => <Admin
         i18nProvider={i18nProvider}
         loginPage={Login}
         >
-    <Resource name="charges" list={ChargeTransactionList} />
+    <Resource
+        name="charges"
+        list={ChargeTransactionList}
+        create={ChargeTransactionCreate}
+        edit={ChargeTransactionEdit}
+    />
     <Resource name="users" list={UserList} />
 </Admin>;
 

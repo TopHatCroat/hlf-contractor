@@ -2,6 +2,7 @@ package fabric
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/TopHatCroat/hlf-contractor/api/modules/shared"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/msp/api"
@@ -13,6 +14,7 @@ const (
 )
 
 type User struct {
+	Id string `json:"id,omitempty"`
 	MSP     string `json:"msp,omitempty"`
 	Email   string `json:"email,omitempty"`
 	Balance int    `json:"balance,omitempty"`
@@ -64,10 +66,14 @@ func (c *Client) AllUsers(identity *shared.Identity) ([]User, error) {
 		return nil, errors.Wrap(err, "failed to unmarshal response from users::QueryAll function")
 	}
 
+	for i := range users {
+		users[i].Id = fmt.Sprintf("%s:%s", users[i].MSP, users[i].Email)
+	}
+
 	return users, nil
 }
 
-func (c *Client) FindUserById(identity *shared.Identity, userName string) (*User, error) {
+func (c *Client) FindUserById(identity *shared.Identity, msp, userName string) (*User, error) {
 	channelName := "default"
 
 	channelClient, err := c.GetChannelClient(identity, channelName)
@@ -75,11 +81,11 @@ func (c *Client) FindUserById(identity *shared.Identity, userName string) (*User
 		return nil, errors.Wrap(err, "failed to execute chaincode call")
 	}
 
-	args := [][]byte{[]byte(identity.Id), []byte(identity.Id)}
+	args := [][]byte{[]byte(msp), []byte(userName)}
 	res, err := channelClient.Query(channel.Request{
 		ChaincodeID: "users",
-		Fcn:         "QueryById",
-		Args:        args,
+		Fcn:          "QueryById",
+		Args:         args,
 	})
 
 	if err != nil {
@@ -91,6 +97,38 @@ func (c *Client) FindUserById(identity *shared.Identity, userName string) (*User
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from users::QueryById function")
 	}
+
+	user.Id = fmt.Sprintf("%s:%s", user.MSP, user.Email)
+
+	return &user, nil
+}
+
+func (c *Client) CreateUser(identity *shared.Identity, msp, userName string) (*User, error) {
+	channelName := "default"
+
+	channelClient, err := c.GetChannelClient(identity, channelName)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to execute chaincode call")
+	}
+
+	args := [][]byte{[]byte(msp), []byte(userName)}
+	res, err := channelClient.Execute(channel.Request{
+		ChaincodeID: "users",
+		Fcn:          "InvokeCreateUser",
+		Args:         args,
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get response from users::InvokeCreateUser function")
+	}
+
+	var user User
+	err = json.Unmarshal(res.Payload, &user)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal response from users::InvokeCreateUser function")
+	}
+
+	user.Id = fmt.Sprintf("%s:%s", user.MSP, user.Email)
 
 	return &user, nil
 }

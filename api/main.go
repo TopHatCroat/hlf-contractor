@@ -32,17 +32,19 @@ func main() {
 	router.HandleFunc("/me", Authenticated(app, app.GetMe)).Methods("GET")
 
 	router.HandleFunc("/charges", Authenticated(app, app.GetCharges)).Methods("GET")
-	router.HandleFunc("/charge/{provider}", Authenticated(app, app.GetChargeByProvider)).Methods("GET")
-	router.HandleFunc("/charge/{provider}/{id}", Authenticated(app, app.GetChargeById)).Methods("GET")
+	router.HandleFunc("/charges", Authenticated(app, app.StartCharge)).Methods("POST")
+	router.HandleFunc("/charges/{id}", Authenticated(app, app.GetChargeById)).Methods("GET")
 
 	router.HandleFunc("/users", Authenticated(app, app.GetUsers)).Methods("GET")
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
-		AllowedHeaders: []string{"Accept",
+		AllowedHeaders: []string{
+			"Accept",
 			"Content-Type",
 			"Content-Length",
+			"Content-Range",
 			"Accept-Encoding",
 			"X-CSRF-Token",
 			"Authorization",

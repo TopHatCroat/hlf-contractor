@@ -2,6 +2,7 @@ package fabric
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/TopHatCroat/hlf-contractor/api/modules/shared"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/pkg/errors"
@@ -9,6 +10,7 @@ import (
 )
 
 type ChargeTransaction struct {
+	Id string    `json:"id,omitempty"`
 	Contractor string    `json:"contractor,omitempty"`
 	ChargeId   string    `json:"charge_id,omitempty"`
 	User       string    `json:"user_email,omitempty"`
@@ -56,6 +58,10 @@ func (c *Client) AllCharges(identity *shared.Identity, chargeProvider string) ([
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::QueryAll function")
 	}
 
+	for i := range charges {
+		charges[i].Id = fmt.Sprintf("%s:%s", charges[i].Contractor, charges[i].ChargeId)
+	}
+
 	return charges, nil
 }
 
@@ -83,6 +89,8 @@ func (c *Client) FindChargeById(identity *shared.Identity, chargeProvider, charg
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::QueryById function")
 	}
+
+	chargeTransaction.Id = fmt.Sprintf("%s:%s", chargeTransaction.Contractor, chargeTransaction.ChargeId)
 
 	return &chargeTransaction, nil
 }
@@ -117,6 +125,8 @@ func (c *Client) StartCharge(identity *shared.Identity, chargeProvider string) (
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeStartChargeTransaction function")
 	}
 
+	chargeTransaction.Id = fmt.Sprintf("%s:%s", chargeTransaction.Contractor, chargeTransaction.ChargeId)
+
 	return &chargeTransaction, nil
 }
 
@@ -150,6 +160,8 @@ func (c *Client) StopCharge(identity *shared.Identity, chargeProvider, chargeId 
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeStopChargeTransaction function")
 	}
 
+	chargeTransaction.Id = fmt.Sprintf("%s:%s", chargeTransaction.Contractor, chargeTransaction.ChargeId)
+
 	return &chargeTransaction, nil
 }
 
@@ -182,6 +194,8 @@ func (c *Client) CompleteCharge(identity *shared.Identity, chargeProvider, charg
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal response from charger::InvokeCompleteChargeTransaction function")
 	}
+
+	chargeTransaction.Id = fmt.Sprintf("%s:%s", chargeTransaction.Contractor, chargeTransaction.ChargeId)
 
 	return &chargeTransaction, nil
 }
