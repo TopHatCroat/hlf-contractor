@@ -33,8 +33,8 @@ var (
 	localAdminCert  = path.Join(cryptoPath, "local", "admin", "cert.pem")
 
 	chargeDuration      = 5 * time.Minute
-	chargeStartTime     = time.Now()
-	chargeEndTime       = time.Now().Add(chargeDuration)
+	chargeStartTime     = time.Now().Round(time.Minute)
+	chargeEndTime       = time.Now().Add(chargeDuration).Round(time.Minute)
 	fakeChargeStartTime = faketime.NewFaketimeWithTime(chargeStartTime)
 	fakeChargeStopTime  = faketime.NewFaketimeWithTime(chargeEndTime)
 	priceCentPerMinute  = 3

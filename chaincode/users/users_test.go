@@ -69,15 +69,6 @@ var _ = Describe("Users", func() {
 			Expect(len(chargeTransactions)).To(Equal(0))
 		})
 
-		It("Empty list result returns to user on get list of all users", func() {
-			queryResp := cc.From(globalActors["user"]).Invoke("QueryAll")
-
-			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
-
-			Expect(chargeTransactions).ToNot(BeNil())
-			Expect(len(chargeTransactions)).To(Equal(0))
-		})
-
 		It("Allow a global admin to create a user", func() {
 			resp := cc.From(globalActors["admin"]).Invoke("InvokeCreateUser", globalMSP, globalUserUsername)
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
@@ -95,7 +86,7 @@ var _ = Describe("Users", func() {
 		})
 
 		It("Allow a global admin to get a full user response", func() {
-			resp := cc.From(globalActors["admin"]).Invoke("QueryById", globalMSP, globalUserUsername)
+			resp := cc.From(globalActors["admin"]).Query("QueryById", globalMSP, globalUserUsername)
 
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
 
@@ -105,14 +96,33 @@ var _ = Describe("Users", func() {
 		})
 
 		It("Allow a global admin get a list of all users", func() {
-			queryResp := cc.From(globalActors["admin"]).Invoke("QueryAll")
+			queryResp := cc.From(globalActors["admin"]).Query("QueryAll")
 
 			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
 			Expect(len(chargeTransactions)).To(Equal(1))
 		})
 
+		It("Allow user list result returns to user with only itself", func() {
+			otherUser := "someother@email.com"
+			resp := cc.From(globalActors["admin"]).Invoke("InvokeCreateUser", globalMSP, otherUser)
+
+			createResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
+
+			Expect(createResp.Email).To(Equal(otherUser))
+			Expect(createResp.State).To(Equal(UserStateActive))
+			Expect(createResp.Balance).To(BeNumerically("==", 0))
+
+			queryResp := cc.From(globalActors["user"]).Invoke("QueryAll")
+
+			chargeTransactions := expectcc.PayloadIs(queryResp, &[]Entity{}).([]Entity)
+
+			Expect(chargeTransactions).ToNot(BeNil())
+			Expect(len(chargeTransactions)).To(Equal(1))
+			Expect(chargeTransactions[0].Email).To(Equal(globalUserUsername))
+		})
+
 		It("Allow a global user to get his own full response", func() {
-			resp := cc.From(globalActors["user"]).Invoke("QueryById", globalMSP, globalUserUsername)
+			resp := cc.From(globalActors["user"]).Query("QueryById", globalMSP, globalUserUsername)
 			queryResp := expectcc.PayloadIs(resp, &Entity{}).(Entity)
 
 			Expect(queryResp.Email).To(Equal(globalUserUsername))

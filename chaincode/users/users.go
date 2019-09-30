@@ -29,7 +29,12 @@ func QueryAll(c router.Context) (interface{}, error) {
 	}
 
 	if !IdentityIsAdmin(certIdentity) {
-		return []Entity{}, nil
+		user, err := getUser(c, certIdentity.MspID, GetCertificateSubject(certIdentity.Cert))
+		if err != nil {
+			return nil, err
+		}
+
+		return []Entity{*user}, nil
 	}
 
 	users, err := c.State().List(TypeName, &Entity{})
@@ -77,14 +82,6 @@ func QueryById(c router.Context) (interface{}, error) {
 }
 
 func InvokeCreateUser(c router.Context) (interface{}, error) {
-	certIdentity, err := identity.FromStub(c.Stub())
-	if err != nil {
-		return nil, err
-	}
-
-	if !IdentityIsAdmin(certIdentity) {
-		return nil, nil
-	}
 
 	mspId := c.Param("mspId")
 	username := c.Param("email")
@@ -103,7 +100,7 @@ func InvokeCreateUser(c router.Context) (interface{}, error) {
 		Balance: 0,
 	}
 
-	if err = c.State().Insert(user); err != nil {
+	if err := c.State().Insert(user); err != nil {
 		return nil, errors.Wrap(err, "Could not create user")
 	}
 

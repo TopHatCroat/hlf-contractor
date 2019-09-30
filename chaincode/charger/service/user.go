@@ -14,7 +14,7 @@ type User struct {
 }
 
 func GetUser(stub shim.ChaincodeStubInterface, msp, userName string) (*User, error) {
-	args := [][]byte{[]byte(msp), []byte(userName)}
+	args := [][]byte{[]byte("QueryById"), []byte(msp), []byte(userName)}
 	res := stub.InvokeChaincode("users", args, "default")
 
 	if res.Status != 200 {

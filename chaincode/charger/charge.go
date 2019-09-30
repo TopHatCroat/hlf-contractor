@@ -9,7 +9,6 @@ import (
 	"github.com/s7techlab/cckit/extensions/owner"
 	"github.com/s7techlab/cckit/identity"
 	"github.com/s7techlab/cckit/router"
-	"math/rand"
 	"reflect"
 	"strconv"
 	"time"
@@ -83,11 +82,12 @@ func InvokeStartChargeTransaction(c router.Context) (res interface{}, err error)
 		return nil, errors.Errorf("User %s:%s is blocked", user.GetMSPID(), GetCertificateSubject(user.Cert))
 	}
 
+	startTime := time.Now().Round(time.Minute)
 	var chargeTransaction = &charge.Entity{
 		Contractor: startTransaction.Contractor,
-		ChargeId:   strconv.Itoa(rand.Int()),
+		ChargeId:   strconv.Itoa(int(startTime.Unix())),
 		User:        SerializeIdentity(user.MspID, user.Cert),
-		StartTime:  time.Now(),
+		StartTime:  startTime,
 		State:       charge.ChargeStateStarted, // Initial state
 	}
 
@@ -128,7 +128,7 @@ func InvokeStopChargeTransaction(c router.Context) (interface{}, error) {
 	// Check if transaction is in progress
 	if chargeTransaction.State == charge.ChargeStateStarted {
 		chargeTransaction.State = charge.ChargeStateStopped
-		chargeTransaction.EndTime = time.Now()
+		chargeTransaction.EndTime = time.Now().Round(time.Minute)
 		chargeTransaction.Price = currentPrice.(price.Entity).Price * int(time.Since(chargeTransaction.StartTime).Minutes())
 	} else {
 		return nil, fmt.Errorf("transaction can not be stopped from %s state", chargeTransaction.State)

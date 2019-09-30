@@ -48,7 +48,7 @@ docker exec \
       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt" \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
       api.awesome.agency \
-      peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
+      peer chaincode install -n users -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # docker exec \
@@ -59,7 +59,7 @@ docker exec \
 #       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/peer.awesome.agency/tls/ca.crt" \
 #       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
 #       api.awesome.agency \
-#       peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
+#       peer chaincode install -n users -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
 #       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 docker exec \
@@ -70,7 +70,7 @@ docker exec \
       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt" \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
       api.awesome.agency \
-      peer chaincode install -n users -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
+      peer chaincode install -n users -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/users \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 
@@ -83,7 +83,7 @@ docker exec \
       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/peers/peer.pharmatic.com/tls/ca.crt" \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
       api.awesome.agency \
-      peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
+      peer chaincode install -n charger -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 docker exec \
@@ -94,7 +94,7 @@ docker exec \
       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/peers/anchor.awesome.agency/tls/ca.crt" \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
       api.awesome.agency \
-      peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
+      peer chaincode install -n charger -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # docker exec \
@@ -105,7 +105,7 @@ docker exec \
 #       -e "CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/crypto-config/peerOrganizations/magik.org/peers/peer.magik.org/tls/ca.crt" \
 #       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/magik.org/users/Admin@magik.org/msp" \
 #       api.awesome.agency \
-#       peer chaincode install -n charger -v 0.0.1 -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
+#       peer chaincode install -n charger -v $CC_VERSION -l golang -p github.com/TopHatCroat/hlf-contractor/chaincode/charger \
 #       --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # Print out the hosts config, this is used for scripts and API running on localhost

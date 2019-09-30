@@ -7,3 +7,4 @@ PHARMATIC_CHANNEL_NAME=pharmatic_default
 
 # incase of errors when running later commands, issue export FABRIC_START_TIMEOUT=<larger number>
 FABRIC_WAIT_TIME=10
+CC_VERSION=0.0.2

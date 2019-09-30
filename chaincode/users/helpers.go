@@ -41,3 +41,7 @@ func IdentityIsEqual(identity *identity.CertIdentity, mspId, username string) bo
 	given := mspId + ":" + username
 	return current == given
 }
+
+func GetCertificateSubject(certificate *x509.Certificate) string {
+	return certificate.Subject.CommonName
+}

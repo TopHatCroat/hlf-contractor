@@ -43,7 +43,7 @@ echo "Creating global users..."
 for it in "admin:admin" "user:user1" "user:user2"; do
     role=$(echo $it | cut -f1 -d:)
     name=$(echo $it | cut -f2 -d:)
-    username=$name@awesome.com
+    username=$name@awesome.agency
 
     register_and_enroll $role $username
 done
@@ -64,7 +64,7 @@ docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
       api.awesome.agency \
       peer chaincode instantiate -o orderer.foi.org:7050 \
-        -C $CHANNEL_NAME -n users -l golang -v 0.0.1 -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer')" \
+        -C $CHANNEL_NAME -n users -l golang -v $CC_VERSION -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 docker exec \
@@ -76,7 +76,7 @@ docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
       api.awesome.agency \
       peer chaincode instantiate -o orderer.foi.org:7050 \
-        -C $CHANNEL_NAME -n users -l golang -v 0.0.1 -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer')" \
+        -C $CHANNEL_NAME -n users -l golang -v $CC_VERSION -c '{"Args":["init"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 
@@ -90,7 +90,7 @@ docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/awesome.agency/users/Admin@awesome.agency/msp" \
       api.awesome.agency \
       peer chaincode instantiate -o orderer.foi.org:7050 \
-        -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
+        -C $CHANNEL_NAME -n charger -l golang -v $CC_VERSION -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 docker exec \
@@ -102,7 +102,7 @@ docker exec \
       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/pharmatic.com/users/Admin@pharmatic.com/msp" \
       api.awesome.agency \
       peer chaincode instantiate -o orderer.foi.org:7050 \
-        -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
+        -C $CHANNEL_NAME -n charger -l golang -v $CC_VERSION -c '{"Args":["2"]}' -P "OR ('AwesomeAgencyMSP.peer', 'PharmaticMSP.peer')" \
         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # docker exec \
@@ -114,7 +114,7 @@ docker exec \
 #       -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/crypto-config/peerOrganizations/magik.org/users/Admin@magik.org/msp" \
 #       api.awesome.agency \
 #       peer chaincode instantiate -o orderer.foi.org:7050 \
-#         -C $CHANNEL_NAME -n charger -l golang -v 0.0.1 -c '{"Args":["3"]}' -P "OR ('MagikMSP.peer')" \
+#         -C $CHANNEL_NAME -n charger -l golang -v $CC_VERSION -c '{"Args":["3"]}' -P "OR ('MagikMSP.peer')" \
 #         --tls --cafile=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/foi.org/orderers/orderer.foi.org/msp/tlscacerts/tlsca.foi.org-cert.pem
 
 # Wait for chaincode instantiation to propagate
